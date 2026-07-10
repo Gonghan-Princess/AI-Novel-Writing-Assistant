@@ -37,6 +37,50 @@ interface Window {
       suggestedSourceLabel: string | null;
       backupDirectory: string;
     }>;
+    getReadinessSnapshot?: () => Promise<{
+      status: "ok" | "warn" | "error";
+      updatedAt: string;
+      items: Array<{
+        id: "service" | "database" | "logs" | "model-config" | "backup-directory";
+        label: string;
+        status: "ok" | "warn" | "error";
+        detail: string;
+        path?: string;
+      }>;
+    }>;
+    getDatabaseBackupSnapshot?: () => Promise<{
+      currentDatabasePath: string;
+      backupDirectory: string;
+      recentBackups: Array<{
+        name: string;
+        directory: string;
+        createdAt: string;
+        sizeBytes: number;
+        files: string[];
+      }>;
+    }>;
+    createDatabaseBackup?: () => Promise<{
+      created: boolean;
+      backup: {
+        name: string;
+        directory: string;
+        createdAt: string;
+        sizeBytes: number;
+        files: string[];
+      } | null;
+      snapshot: {
+        currentDatabasePath: string;
+        backupDirectory: string;
+        recentBackups: Array<{
+          name: string;
+          directory: string;
+          createdAt: string;
+          sizeBytes: number;
+          files: string[];
+        }>;
+      };
+    }>;
+    openDatabaseBackupDirectory?: () => Promise<unknown>;
     subscribeBootstrapState?: (
       listener: (snapshot: {
         state: "launching" | "starting-server" | "loading-ui" | "ready" | "error";

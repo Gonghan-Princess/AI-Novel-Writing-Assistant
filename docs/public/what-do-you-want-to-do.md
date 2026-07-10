@@ -32,6 +32,16 @@
 | 管理题材、流派和世界样本 | [类型管理](./modules/genre-base-library.md) / [流派管理](./modules/progression-mode-library.md) / [世界样本库](./modules/world-sample-library.md) |
 | 查看任务排队和失败状态 | [任务中心](./modules/task-center.md) |
 
+## 我想维护自己的项目/审核变更
+
+| 目标 | 入口 |
+| --- | --- |
+| 审核 UI、后端、AI 内容、第三方材料和测试结果 | [宫寒项目维护者审核清单](../wiki/workflows/maintainer-change-review-checklist.md) |
+| 确认这是宫寒个人版内部流程 | [宫寒个人版说明](./gonghan-personal-edition.md) |
+| 查看文档目录约定 | [docs 管理约定](../README.md) |
+| 查看贡献协议和披露要求 | [CONTRIBUTING](../../CONTRIBUTING.md) |
+| 查看许可证和归属 | [LICENSE](../../LICENSE) / [NOTICE](../../NOTICE) / [FORK_NOTICE](../../FORK_NOTICE.md) |
+
 ## 我想了解宫寒个人版和贡献规则
 
 | 目标 | 入口 |
@@ -41,11 +51,12 @@
 | 查看贡献协议和披露要求 | [CONTRIBUTING](../../CONTRIBUTING.md) |
 | 查看许可证和归属 | [LICENSE](../../LICENSE) / [NOTICE](../../NOTICE) / [FORK_NOTICE](../../FORK_NOTICE.md) |
 
-## PR 前检查
+## 变更验收检查
 
-提交 PR 前建议确认：
+合并或保留变更前建议确认：
 
-- README 或公开文档是否需要同步更新。
-- 是否包含 AI 辅助生成或整理的内容，并在 PR 中说明使用范围。
+- README、公开文档或 wiki 导航是否需要同步更新。
+- 变更是否只面向 Gonghan-Princess 维护的本仓库，不再引导到元项目 PR。
+- 是否包含 AI 辅助生成或整理的内容，并说明使用范围。
 - 是否包含第三方代码、素材、数据、模型权重、模型输出或其他受许可证约束内容，并补充来源、许可证和必要归属信息。
 - 是否已经运行与本次修改相关的验证命令，或说明无法验证的原因。

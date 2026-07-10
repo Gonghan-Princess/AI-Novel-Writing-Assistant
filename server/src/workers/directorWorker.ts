@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { ensureRuntimeDatabaseReady } from "../db/runtimeMigrations";
 import { loadProviderApiKeys } from "../llm/factory";
+import { createLogger } from "../platform/logging/logger";
 import { initializeRagSettingsCompatibility } from "../services/settings/RagCompatibilityBootstrapService";
 import { DirectorCommandExecutor } from "../services/novel/director/commands/DirectorCommandExecutor";
 import { DirectorTaskQueue, type DirectorTaskQueueOptions } from "./DirectorTaskQueue";
@@ -8,6 +9,8 @@ import { taskDispatcher } from "./TaskDispatcher";
 
 // DirectorWorker 通常由 app.ts 的 initializeBackgroundServices() 在同进程内启动。
 // 此文件保留独立进程入口（`require.main === module`），仅供需要分离部署时使用。
+
+const logger = createLogger("director.worker");
 
 export interface DirectorWorkerDeps {
   queue: DirectorTaskQueue;
@@ -45,9 +48,12 @@ export class DirectorWorker {
   }
 
   async start(): Promise<void> {
-    console.log(
-      `[director.worker] started workerId=${this.queue.workerId} slots=${this.queue.executionSlots} pollMs=${this.queue.pollMs} leaseMs=${this.queue.leaseMs}`,
-    );
+    logger.info("started", {
+      workerId: this.queue.workerId,
+      slots: this.queue.executionSlots,
+      pollMs: this.queue.pollMs,
+      leaseMs: this.queue.leaseMs,
+    }, undefined, { expectedTestNoise: true });
 
     const runners = Array.from({ length: this.queue.executionSlots }, (_, i) =>
       this.runSlot(`slot-${i + 1}`),
@@ -63,7 +69,7 @@ export class DirectorWorker {
           await this.queue.waitForWork();
         }
       } catch (error) {
-        console.error(`[director.worker] slot error slotId=${slotId}`, error);
+        logger.error("slot error", { slotId }, error);
         await this.queue.waitForWork();
       }
     }
@@ -81,24 +87,28 @@ export class DirectorWorker {
       try {
         await this.queue.markRunning(command.id, slotId);
 
-        console.log(
-          `[director.worker] executing commandId=${command.id} type=${command.commandType} taskId=${command.taskId} novelId=${command.novelId} slot=${slotId}`,
-        );
+        logger.info("executing command", {
+          commandId: command.id,
+          commandType: command.commandType,
+          taskId: command.taskId,
+          novelId: command.novelId,
+          slotId,
+        }, undefined, { expectedTestNoise: true });
 
         const outcome = await this.commandExecutor.execute(command.id);
 
         if (outcome === "cancelled") {
           await this.queue.cancelTask(command.id, slotId);
-          console.log(`[director.worker] cancelled commandId=${command.id}`);
+          logger.info("cancelled command", { commandId: command.id }, undefined, { expectedTestNoise: true });
         } else {
           await this.queue.completeTask(command.id, slotId);
-          console.log(`[director.worker] completed commandId=${command.id}`);
+          logger.info("completed command", { commandId: command.id }, undefined, { expectedTestNoise: true });
         }
       } finally {
         this.queue.releaseResourceGate(command.novelId, command.commandType);
       }
     } catch (error) {
-      console.error(`[director.worker] command failed commandId=${command.id}`, error);
+      logger.error("command failed", { commandId: command.id, slotId }, error);
       await this.queue.failTask(command.id, slotId, error);
     } finally {
       stopRenewal();
@@ -111,10 +121,10 @@ export class DirectorWorker {
 async function bootstrap(): Promise<void> {
   await ensureRuntimeDatabaseReady();
   await initializeRagSettingsCompatibility().catch((error) => {
-    console.warn("[director.worker] failed to initialize RAG compatibility settings.", error);
+    logger.warn("failed to initialize RAG compatibility settings", {}, error);
   });
   await loadProviderApiKeys().catch((error) => {
-    console.warn("[director.worker] failed to load provider API keys from database.", error);
+    logger.warn("failed to load provider API keys from database", {}, error);
   });
 
   const worker = new DirectorWorker();
@@ -125,7 +135,7 @@ async function bootstrap(): Promise<void> {
 
 if (require.main === module) {
   void bootstrap().catch((error) => {
-    console.error("[director.worker] bootstrap failed", error);
+    logger.error("bootstrap failed", {}, error);
     process.exit(1);
   });
 }

@@ -19,6 +19,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://gonghan-princess.github.io/AI-Novel-Writing-Assistant/docs/what-do-you-want-to-do</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://gonghan-princess.github.io/AI-Novel-Writing-Assistant/docs/gonghan-personal-edition</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://gonghan-princess.github.io/AI-Novel-Writing-Assistant/docs/installation</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
@@ -28,13 +40,13 @@
     <loc>https://gonghan-princess.github.io/AI-Novel-Writing-Assistant/docs/faq</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gonghan-princess.github.io/AI-Novel-Writing-Assistant/docs/troubleshooting</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://gonghan-princess.github.io/AI-Novel-Writing-Assistant/docs/first-novel-walkthrough</loc>

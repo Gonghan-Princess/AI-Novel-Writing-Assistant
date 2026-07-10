@@ -1,10 +1,12 @@
 import os from "node:os";
 import { prisma } from "../db/prisma";
+import { createLogger } from "../platform/logging/logger";
 import { DirectorCommandService } from "../services/novel/director/commands/DirectorCommandService";
 import { resourceClassForCommand } from "../services/novel/director/commands/DirectorCommandServiceHelpers";
 import { taskDispatcher } from "./TaskDispatcher";
 
 const ACTIVE_COMMAND_STATUSES = ["leased", "running"] as const;
+const logger = createLogger("director.task-queue");
 
 function resolveNumberEnv(name: string, fallback: number): number {
   const value = Number(process.env[name]);
@@ -144,7 +146,7 @@ export class DirectorTaskQueue {
   startLeaseRenewal(commandId: string, slotId: string): () => void {
     const renew = () => {
       void this.commandService.renewLease(commandId, `${this.workerId}:${slotId}`, this.leaseMs).catch((error) => {
-        console.warn(`[task-queue] failed to renew command lease commandId=${commandId}`, error);
+        logger.warn("failed to renew command lease", { commandId, slotId }, error);
       });
     };
     renew();

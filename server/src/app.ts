@@ -54,7 +54,10 @@ import {
 import { initializeRagSettingsCompatibility } from "./services/settings/RagCompatibilityBootstrapService";
 import { DirectorWorker } from "./workers/directorWorker";
 import { cleanupLogDirectory, resolveLogRetentionConfig } from "./platform/logging/logRetention";
+import { createLogger } from "./platform/logging/logger";
 import { resolveLogsRoot } from "./runtime/appPaths";
+
+const logger = createLogger("server");
 
 getSharedNovelServices();
 registerNovelEventHandlers(novelEventBus);
@@ -215,11 +218,11 @@ function resolveServerStartOptions(options?: ServerStartOptions): {
 }
 
 function logServerReady(host: string, port: number): void {
-  console.log(`[server] listening on http://localhost:${port}`);
+  logger.info("listening", { url: `http://localhost:${port}` });
   if (host === "0.0.0.0" || host === "::") {
     const lanIp = getLanIp();
     if (lanIp) {
-      console.log(`[server] LAN: http://${lanIp}:${port}`);
+      logger.info("lan listening", { url: `http://${lanIp}:${port}` });
     }
   }
 }
@@ -229,17 +232,17 @@ function scheduleLogRetentionCleanup(): void {
     try {
       const summary = cleanupLogDirectory(resolveLogsRoot(), resolveLogRetentionConfig());
       if (summary.deletedFiles > 0 || summary.failedFiles > 0) {
-        console.info("[server.logs] cleanup completed.", {
+        logger.info("log cleanup completed", {
           deletedFiles: summary.deletedFiles,
           deletedBytes: summary.deletedBytes,
           failedFiles: summary.failedFiles,
         });
       }
       for (const failure of summary.failures.slice(0, 5)) {
-        console.warn("[server.logs] cleanup failed for file.", failure);
+        logger.warn("log cleanup failed for file", failure);
       }
     } catch (error) {
-      console.warn("[server.logs] cleanup skipped.", error);
+      logger.warn("log cleanup skipped", {}, error);
     }
   });
 }
@@ -250,22 +253,22 @@ function initializeBackgroundServices(): BackgroundServicesHandle {
   novelSideEffectWorker.start();
   const directorWorker = new DirectorWorker();
   void directorWorker.start().catch((error) => {
-    console.error("[director.worker] unexpected stop", error);
+    logger.error("director worker unexpected stop", {}, error);
   });
   const recoveryInitialization = recoveryTaskService.initializePendingRecoveries();
 
   void loadProviderApiKeys().catch((error) => {
-    console.warn("数据库中的模型密钥加载失败，已回退到环境变量。", error);
+    logger.warn("数据库中的模型密钥加载失败，已回退到环境变量。", {}, error);
   });
 
   void ensureSystemResourceStarterData()
     .then((systemResourceReport) => {
       if (hasSystemResourceBootstrapChanges(systemResourceReport)) {
-        console.log("[server] built-in creative resources bootstrapped.", systemResourceReport);
+        logger.info("built-in creative resources bootstrapped", systemResourceReport);
       }
     })
     .catch((error) => {
-      console.warn("Failed to bootstrap built-in creative resources.", error);
+      logger.warn("Failed to bootstrap built-in creative resources.", {}, error);
     });
 
   void recoveryInitialization
@@ -274,7 +277,7 @@ function initializeBackgroundServices(): BackgroundServicesHandle {
       novelPipelineRuntimeService.startWatchdog();
     })
     .catch((error) => {
-      console.warn("Failed to prepare pending recovery candidates.", error);
+      logger.warn("Failed to prepare pending recovery candidates.", {}, error);
       bookAnalysisService.startWatchdog();
       novelPipelineRuntimeService.startWatchdog();
     });
@@ -300,7 +303,7 @@ export async function startServer(options?: ServerStartOptions): Promise<Started
     ragCompatibilityReport.importedSettingKeys.length > 0
     || ragCompatibilityReport.importedProviderRecords.length > 0
   ) {
-    console.log("[server] imported legacy RAG env settings.", ragCompatibilityReport);
+    logger.info("imported legacy RAG env settings", ragCompatibilityReport);
   }
 
   const app = createApp();
@@ -342,7 +345,7 @@ async function bootstrap(): Promise<void> {
 
 if (require.main === module) {
   void bootstrap().catch((error) => {
-    console.error("[server] bootstrap failed.", error);
+    logger.error("bootstrap failed", {}, error);
     process.exit(1);
   });
 }

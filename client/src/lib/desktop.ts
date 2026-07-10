@@ -53,6 +53,42 @@ export interface DesktopDataImportResult {
   sourcePath?: string;
 }
 
+export type DesktopReadinessStatus = "ok" | "warn" | "error";
+
+export interface DesktopReadinessItem {
+  id: "service" | "database" | "logs" | "model-config" | "backup-directory";
+  label: string;
+  status: DesktopReadinessStatus;
+  detail: string;
+  path?: string;
+}
+
+export interface DesktopReadinessSnapshot {
+  status: DesktopReadinessStatus;
+  updatedAt: string;
+  items: DesktopReadinessItem[];
+}
+
+export interface DesktopDatabaseBackupEntry {
+  name: string;
+  directory: string;
+  createdAt: string;
+  sizeBytes: number;
+  files: string[];
+}
+
+export interface DesktopDatabaseBackupSnapshot {
+  currentDatabasePath: string;
+  backupDirectory: string;
+  recentBackups: DesktopDatabaseBackupEntry[];
+}
+
+export interface DesktopDatabaseBackupResult {
+  created: boolean;
+  backup: DesktopDatabaseBackupEntry | null;
+  snapshot: DesktopDatabaseBackupSnapshot;
+}
+
 const DEFAULT_BOOTSTRAP_SNAPSHOT: DesktopBootstrapSnapshot = {
   state: "launching",
   stage: "launching",
@@ -118,6 +154,22 @@ export async function restartDesktopApp(): Promise<void> {
 
 export async function getDesktopDataImportSnapshot(): Promise<DesktopDataImportSnapshot | null> {
   return getDesktopBridge()?.getDataImportSnapshot?.() ?? null;
+}
+
+export async function getDesktopReadinessSnapshot(): Promise<DesktopReadinessSnapshot | null> {
+  return getDesktopBridge()?.getReadinessSnapshot?.() ?? null;
+}
+
+export async function getDesktopDatabaseBackupSnapshot(): Promise<DesktopDatabaseBackupSnapshot | null> {
+  return getDesktopBridge()?.getDatabaseBackupSnapshot?.() ?? null;
+}
+
+export async function createDesktopDatabaseBackup(): Promise<DesktopDatabaseBackupResult | null> {
+  return getDesktopBridge()?.createDatabaseBackup?.() ?? null;
+}
+
+export async function openDesktopDatabaseBackupDirectory(): Promise<void> {
+  await getDesktopBridge()?.openDatabaseBackupDirectory?.();
 }
 
 export async function importDesktopLegacyDatabase(options?: { preferSuggested?: boolean }): Promise<DesktopDataImportResult | null> {

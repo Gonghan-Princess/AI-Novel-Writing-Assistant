@@ -46,6 +46,18 @@ export const docsManifest: SiteDocCategory[] = [
         "docs/public/introduction.md",
       ),
       doc(
+        "what-do-you-want-to-do",
+        "我想做什么",
+        "按目标选择下载、开发、写第一本书、排查故障或维护项目的入口。",
+        "docs/public/what-do-you-want-to-do.md",
+      ),
+      doc(
+        "gonghan-personal-edition",
+        "宫寒个人版说明",
+        "说明 Gonghan-Princess 个人版的维护边界、授权归属和项目定位。",
+        "docs/public/gonghan-personal-edition.md",
+      ),
+      doc(
         "installation",
         "安装与准备",
         "在 Windows 上安装桌面版，确认模型、存储和知识库选项。",

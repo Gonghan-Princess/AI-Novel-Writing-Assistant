@@ -66,6 +66,7 @@ Wiki 不替代计划、检查点或发布说明：
 - [Wiki Index](./wiki/README.md)
 - [Wiki Entry Template](./wiki/entry-template.md)
 - [Module Boundaries](./wiki/architecture/module-boundaries.md)
+- [宫寒项目维护者审核清单](./wiki/workflows/maintainer-change-review-checklist.md)
 - [Auto Director Runtime](./wiki/workflows/auto-director-runtime.md)
 - [Chapter Production Chain](./wiki/workflows/chapter-production-chain.md)
 - [Prompt Registry and Structured Output](./wiki/prompts/prompt-registry-and-structured-output.md)
@@ -82,6 +83,7 @@ Wiki 不替代计划、检查点或发布说明：
 
 - [我想做什么：公开文档导航](./public/what-do-you-want-to-do.md)
 - [宫寒个人版说明](./public/gonghan-personal-edition.md)
+- [宫寒项目维护者审核清单](./wiki/workflows/maintainer-change-review-checklist.md)
 
 ### `docs/archive`
 

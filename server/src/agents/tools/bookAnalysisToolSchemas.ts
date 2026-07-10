@@ -109,7 +109,7 @@ export const auditChapterContinuityOutputSchema = z.object({
   recommendation: toolSummarySchema,
 });
 
-// ─── analyze_quality_debt_attribution ─────────────────────────���─────────────
+// analyze_quality_debt_attribution
 
 export const analyzeQualityDebtAttributionInputSchema = z.object({
   novelId: toolRequiredIdSchema,

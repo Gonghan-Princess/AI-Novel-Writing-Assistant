@@ -8,7 +8,13 @@ import {
   importLegacyDatabaseFromPath,
   resolveSuggestedLegacyDatabasePath,
 } from "./runtime/dataImport";
+import {
+  createDesktopDatabaseBackup,
+  ensureDesktopManualDatabaseBackupRoot,
+  getDesktopDatabaseBackupSnapshot,
+} from "./runtime/databaseBackup";
 import { appendDesktopLog, cleanupDesktopLogs, logDesktopError } from "./runtime/logging";
+import { getDesktopReadinessSnapshot } from "./runtime/readiness";
 import { resolveDesktopServerPort, startDesktopServer } from "./runtime/server";
 import {
   isPortableDesktopRuntime,
@@ -426,6 +432,9 @@ function registerDesktopIpcHandlers(): void {
   ipcMain.handle("desktop:get-bootstrap-snapshot", () => desktopBootstrapStore.getSnapshot());
   ipcMain.handle("desktop:get-updater-snapshot", () => desktopUpdaterStore.getSnapshot());
   ipcMain.handle("desktop:get-data-import-snapshot", () => getDesktopDataImportSnapshot());
+  ipcMain.handle("desktop:get-readiness-snapshot", () => getDesktopReadinessSnapshot({ serverHealthy }));
+  ipcMain.handle("desktop:get-database-backup-snapshot", () => getDesktopDatabaseBackupSnapshot());
+  ipcMain.handle("desktop:create-database-backup", () => createDesktopDatabaseBackup());
   ipcMain.handle("desktop:check-for-updates", async () => {
     await updaterController?.checkForUpdates();
     return desktopUpdaterStore.getSnapshot();
@@ -435,6 +444,7 @@ function registerDesktopIpcHandlers(): void {
     return true;
   });
   ipcMain.handle("desktop:open-logs-directory", () => shell.openPath(resolveDesktopLogsDir()));
+  ipcMain.handle("desktop:open-database-backup-directory", () => shell.openPath(ensureDesktopManualDatabaseBackupRoot()));
   ipcMain.handle("desktop:copy-log-path", () => {
     const logPath = desktopBootstrapStore.getSnapshot().logFile;
     clipboard.writeText(logPath);

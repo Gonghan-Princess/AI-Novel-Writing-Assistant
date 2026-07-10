@@ -1,4 +1,7 @@
+import { createLogger } from "../platform/logging/logger";
+
 const DEFAULT_SQLITE_RETRY_DELAYS_MS = [250, 1000, 2500] as const;
+const logger = createLogger("sqlite.retry");
 
 function extractErrorCode(error: unknown): string | null {
   if (!error || typeof error !== "object" || !("code" in error)) {
@@ -43,8 +46,17 @@ export async function withSqliteRetry<T>(
 
       const delayMs = retryDelaysMs[attempt] ?? retryDelaysMs[retryDelaysMs.length - 1] ?? 0;
       const reason = error instanceof Error ? error.message : String(error);
-      console.warn(
-        `[sqlite.retry] label=${options?.label ?? "unknown"} attempt=${attempt + 1}/${retryDelaysMs.length} waitMs=${delayMs} reason=${JSON.stringify(reason)}`,
+      logger.warn(
+        "retrying transient sqlite failure",
+        {
+          label: options?.label ?? "unknown",
+          attempt: attempt + 1,
+          maxAttempts: retryDelaysMs.length,
+          waitMs: delayMs,
+          reason,
+        },
+        error,
+        { expectedTestNoise: true },
       );
       attempt += 1;
       await wait(delayMs);

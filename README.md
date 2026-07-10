@@ -51,6 +51,7 @@
 | 我想理解整条生产链 | [端到端生产链](./docs/public/flow/end-to-end-production.md) |
 | 我想排查启动或任务失败 | [故障排查](./docs/public/troubleshooting.md) |
 | 我想了解宫寒个人版边界 | [宫寒个人版说明](./docs/public/gonghan-personal-edition.md) |
+| 我想维护自己的项目/审核变更 | [宫寒项目维护者审核清单](./docs/wiki/workflows/maintainer-change-review-checklist.md) |
 | 我想贡献代码或文档 | [贡献方式](#贡献方式) 与 [CONTRIBUTING.md](./CONTRIBUTING.md) |
 
 更多按目标组织的文档入口见 [公开文档导航](./docs/public/what-do-you-want-to-do.md)。
@@ -620,8 +621,8 @@ docs/     设计文档、阶段检查点、模块计划与历史归档
 - 强化写法引擎、知识库回灌和世界观一致性链路
 - 补充测试、错误回放和运行时可观察性
 
-欢迎在 [Gonghan-Princess/AI-Novel-Writing-Assistant](https://github.com/Gonghan-Princess/AI-Novel-Writing-Assistant) 提交 Issue 或 Pull Request。
-提交 Pull Request 即表示你确认自己有权提交该内容，并同意该内容随本仓库按 AGPL-3.0-only 分发；如果包含 AI 辅助生成内容、第三方代码、素材、数据、模型输出或其他受许可证约束的内容，请在 PR 中明确说明使用范围、来源、许可证和必要归属信息。详见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
+欢迎在 [Gonghan-Princess/AI-Novel-Writing-Assistant](https://github.com/Gonghan-Princess/AI-Novel-Writing-Assistant) 提交 Issue 或 Pull Request。维护者审核只面向 Gonghan-Princess 自己维护的本仓库，不再引导到元项目 PR 流程。
+提交 Pull Request 即表示你确认自己有权提交该内容，并同意该内容随本仓库按 AGPL-3.0-only 分发；如果包含 AI 辅助生成内容、第三方代码、素材、数据、模型输出或其他受许可证约束的内容，请在 PR 中明确说明使用范围、来源、许可证和必要归属信息。维护者合并前可按 [宫寒项目维护者审核清单](./docs/wiki/workflows/maintainer-change-review-checklist.md) 复核，详见 [CONTRIBUTING.md](./CONTRIBUTING.md)。
 
 ## 致谢
 

@@ -29,6 +29,7 @@
     "build": "pnpm --filter @ai-novel/shared build && pnpm --filter @ai-novel/server build && pnpm --filter @ai-novel/client build",
     "build:site": "pnpm --filter @ai-novel/site build",
     "check:docs-manifest": "node scripts/check-docs-manifest.cjs",
+    "check:encoding": "node scripts/check-text-encoding.cjs",
     "build:desktop": "pnpm --filter @ai-novel/desktop build",
     "build:desktop:all": "pnpm --filter @ai-novel/shared build && pnpm --filter @ai-novel/server prisma:generate && pnpm --filter @ai-novel/server build && pnpm --filter @ai-novel/client build:desktop && pnpm --filter @ai-novel/desktop build",
     "stage:desktop": "pnpm run build:desktop:all && node desktop/scripts/stage-desktop.cjs",

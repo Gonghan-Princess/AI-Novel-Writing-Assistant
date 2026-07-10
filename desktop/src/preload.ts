@@ -20,6 +20,10 @@ contextBridge.exposeInMainWorld("__AI_NOVEL_RUNTIME__", readRuntimeConfig());
 contextBridge.exposeInMainWorld("__AI_NOVEL_DESKTOP__", {
   getBootstrapSnapshot: () => ipcRenderer.invoke("desktop:get-bootstrap-snapshot"),
   getDataImportSnapshot: () => ipcRenderer.invoke("desktop:get-data-import-snapshot"),
+  getReadinessSnapshot: () => ipcRenderer.invoke("desktop:get-readiness-snapshot"),
+  getDatabaseBackupSnapshot: () => ipcRenderer.invoke("desktop:get-database-backup-snapshot"),
+  createDatabaseBackup: () => ipcRenderer.invoke("desktop:create-database-backup"),
+  openDatabaseBackupDirectory: () => ipcRenderer.invoke("desktop:open-database-backup-directory"),
   subscribeBootstrapState: (listener: (snapshot: unknown) => void) => {
     const wrappedListener = (_event: unknown, snapshot: unknown) => {
       listener(snapshot);

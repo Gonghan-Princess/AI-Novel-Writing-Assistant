@@ -14,7 +14,10 @@ export type LongNovelTemplateId = typeof LONG_NOVEL_TEMPLATE_IDS[number];
 export interface LongNovelTemplate {
   id: LongNovelTemplateId;
   label: string;
+  name?: string;
+  shortLabel?: string;
   description: string;
+  openingQuestions?: readonly string[];
   planningFocus: readonly string[];
   worldbuildingPrompts: readonly string[];
   characterPrompts: readonly string[];
@@ -257,6 +260,6 @@ export const LONG_NOVEL_TEMPLATES = [
   },
 ] as const satisfies readonly LongNovelTemplate[];
 
-export function getLongNovelTemplate(id: LongNovelTemplateId): LongNovelTemplate | undefined {
-  return LONG_NOVEL_TEMPLATES.find((template) => template.id === id);
+export function getLongNovelTemplate(id: string | null | undefined): LongNovelTemplate {
+  return LONG_NOVEL_TEMPLATES.find((template) => template.id === id) ?? LONG_NOVEL_TEMPLATES[LONG_NOVEL_TEMPLATES.length - 1];
 }

@@ -29,6 +29,9 @@ test("long novel template registry includes the first shared template ids", () =
 
 test("long novel templates expose shared automation guidance fields", () => {
   const expectedFields = [
+    "name",
+    "shortLabel",
+    "openingQuestions",
     "planningFocus",
     "worldbuildingPrompts",
     "characterPrompts",

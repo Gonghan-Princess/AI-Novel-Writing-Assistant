@@ -1,10 +1,6 @@
 import type { LongNovelTemplate } from "@ai-novel/shared/types/longNovelTemplate";
 import { Badge } from "@/components/ui/badge";
 
-type TemplateWithOpeningQuestions = LongNovelTemplate & {
-  openingQuestions?: readonly string[];
-};
-
 interface LongNovelMainlinePreviewProps {
   template: LongNovelTemplate;
   inspiration: string;
@@ -21,13 +17,12 @@ export default function LongNovelMainlinePreview({
   inspiration,
   automationLabel,
 }: LongNovelMainlinePreviewProps) {
-  const displayTemplate = template as TemplateWithOpeningQuestions;
   const trimmedInspiration = inspiration.trim();
   const steps = [
     {
       title: "类型定位",
       badge: template.label,
-      prompts: firstItems(displayTemplate.openingQuestions, template.planningFocus),
+      prompts: firstItems(template.openingQuestions, template.planningFocus),
     },
     {
       title: "书级契约",

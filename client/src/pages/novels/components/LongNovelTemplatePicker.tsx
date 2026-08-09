@@ -6,21 +6,16 @@ import { LONG_NOVEL_TEMPLATES } from "@ai-novel/shared/types/longNovelTemplate";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-type TemplateDisplay = LongNovelTemplate & {
-  name?: string;
-  shortLabel?: string;
-};
-
 interface LongNovelTemplatePickerProps {
   value: LongNovelTemplateId;
   onChange: (id: LongNovelTemplateId) => void;
 }
 
-function getTemplateName(template: TemplateDisplay): string {
+function getTemplateName(template: LongNovelTemplate): string {
   return template.name?.trim() || template.label;
 }
 
-function getTemplateShortLabel(template: TemplateDisplay): string {
+function getTemplateShortLabel(template: LongNovelTemplate): string {
   return template.shortLabel?.trim() || template.label;
 }
 
@@ -28,7 +23,6 @@ export default function LongNovelTemplatePicker({ value, onChange }: LongNovelTe
   return (
     <div className="long-novel-template-picker grid gap-3 md:grid-cols-2 xl:grid-cols-4">
       {LONG_NOVEL_TEMPLATES.map((template) => {
-        const displayTemplate = template as TemplateDisplay;
         const selected = template.id === value;
 
         return (
@@ -47,10 +41,10 @@ export default function LongNovelTemplatePicker({ value, onChange }: LongNovelTe
             <div className="flex min-w-0 items-start justify-between gap-2">
               <div className="min-w-0">
                 <div className="truncate text-sm font-semibold text-foreground">
-                  {getTemplateName(displayTemplate)}
+                  {getTemplateName(template)}
                 </div>
                 <div className="mt-1 text-xs text-muted-foreground">
-                  {getTemplateShortLabel(displayTemplate)}
+                  {getTemplateShortLabel(template)}
                 </div>
               </div>
               {selected ? (

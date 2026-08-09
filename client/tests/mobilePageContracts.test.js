@@ -455,7 +455,7 @@ test("novel edit page uses a dedicated mobile workspace instead of the desktop s
   assert.match(novelEditView, /LongNovelMainlineStatusPanel/);
   assert.match(mobileNovelEditView, /mobile-page-novel-edit/);
   assert.match(mobileNovelEditView, /mobile-novel-workspace-header/);
-  assert.match(mobileNovelEditView, /long-novel-mainline-status/);
+  assert.match(mobileNovelEditView, /<LongNovelMainlineStatusPanel/);
   assert.match(mobileNovelEditView, /MobileNovelStepNav/);
   assert.match(mobileNovelEditView, /MobileAutoDirectorStatusCard/);
 });

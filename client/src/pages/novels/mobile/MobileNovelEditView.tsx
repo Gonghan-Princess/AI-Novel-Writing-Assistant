@@ -223,7 +223,7 @@ export default function MobileNovelEditView(props: NovelEditViewProps) {
           />
         </div>
 
-        <div className="long-novel-mainline-status-slot mt-3">
+        <div className="long-novel-mainline-panel-slot mt-3">
           <LongNovelMainlineStatusPanel
             novelTitle={novelTitle}
             task={taskDrawer?.task ?? null}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, RotateCcw } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useIsMobileViewport } from "@/components/layout/mobile/useIsMobileViewport";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import KnowledgeBindingPanel from "@/components/knowledge/KnowledgeBindingPanel"
 import AITakeoverContainer from "@/components/workflow/AITakeoverContainer";
 import ChapterManagementTab from "./ChapterManagementTab";
 import DirectorFactDebugDialog from "./DirectorFactDebugDialog";
+import LongNovelMainlineStatusPanel from "./LongNovelMainlineStatusPanel";
 import NovelCharacterPanel from "./NovelCharacterPanel";
 import NovelTaskDrawer from "./NovelTaskDrawer";
 import OutlineTab from "./OutlineTab";
@@ -68,6 +70,7 @@ function DesktopNovelEditView(props: NovelEditViewProps) {
 
   const [isProjectToolsOpen, setIsProjectToolsOpen] = useState(false);
   const [isExportDialogOpen, setIsExportDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const resetChaptersMutation = useMutation({
@@ -197,6 +200,12 @@ function DesktopNovelEditView(props: NovelEditViewProps) {
               </>
             ) : null}
           </div>
+          <LongNovelMainlineStatusPanel
+            novelTitle={novelTitle}
+            task={taskDrawer?.task ?? null}
+            currentPageLabel={currentPageLabel}
+            onOpenRoute={(route) => navigate(route)}
+          />
           <div className="flex flex-wrap items-center justify-end gap-2">
             {!hideTakeoverEntry ? (
               isTakeoverLoading ? (

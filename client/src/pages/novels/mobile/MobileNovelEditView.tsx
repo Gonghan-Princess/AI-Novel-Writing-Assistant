@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Loader2, MoreHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import BasicInfoTab from "../components/BasicInfoTab";
 import ChapterManagementTab from "../components/ChapterManagementTab";
+import LongNovelMainlineStatusPanel from "../components/LongNovelMainlineStatusPanel";
 import NovelCharacterPanel from "../components/NovelCharacterPanel";
 import NovelTaskDrawer from "../components/NovelTaskDrawer";
 import OutlineTab from "../components/OutlineTab";
@@ -51,12 +53,14 @@ export default function MobileNovelEditView(props: NovelEditViewProps) {
     activeStepTakeoverEntry,
   } = props;
   const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const normalizedActiveTab = normalizeNovelWorkspaceTab(activeTab);
   const normalizedWorkflowTab = normalizeNovelWorkspaceTab(workflowCurrentTab ?? normalizedActiveTab);
+  const currentPageLabel = getNovelWorkspaceTabLabel(normalizedActiveTab);
   const novelTitle = basicTab.basicForm.title.trim() || "未命名小说";
   const statusText = getMobileNovelWorkspaceStatusText({
-    activeLabel: getNovelWorkspaceTabLabel(normalizedActiveTab),
+    activeLabel: currentPageLabel,
     workflowLabel: getNovelWorkspaceTabLabel(normalizedWorkflowTab),
   });
   const isTakeoverLoading = takeover?.mode === "loading";
@@ -216,6 +220,15 @@ export default function MobileNovelEditView(props: NovelEditViewProps) {
             activeTab={normalizedActiveTab}
             workflowCurrentTab={normalizedWorkflowTab}
             onSelectTab={selectTab}
+          />
+        </div>
+
+        <div className="long-novel-mainline-status-slot mt-3">
+          <LongNovelMainlineStatusPanel
+            novelTitle={novelTitle}
+            task={taskDrawer?.task ?? null}
+            currentPageLabel={currentPageLabel}
+            onOpenRoute={(route) => navigate(route)}
           />
         </div>
       </header>

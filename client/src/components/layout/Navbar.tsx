@@ -52,8 +52,13 @@ export default function Navbar(props: NavbarProps) {
             {workspaceNavMode === "workspace" ? "项目导航" : "创作导航"}
           </Button>
         ) : null}
-        <div className={useMobileAutoDirectorShell ? AUTO_DIRECTOR_MOBILE_CLASSES.navbarModelSelector : undefined}>
-          <LLMSelector compact showBadge={false} showHelperText={false} />
+        <div className={useMobileAutoDirectorShell ? AUTO_DIRECTOR_MOBILE_CLASSES.navbarModelSelector : "topbar-model-selector"}>
+          <LLMSelector
+            compact
+            showBadge={false}
+            showHelperText={false}
+            className="topbar-llm-selector"
+          />
         </div>
       </div>
     </header>

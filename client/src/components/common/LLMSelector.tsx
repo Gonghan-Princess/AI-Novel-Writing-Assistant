@@ -266,7 +266,7 @@ export default function LLMSelector({
   };
 
   return (
-    <div className={cn("space-y-2", compact && "space-y-1", className)}>
+    <div className={cn("llm-selector space-y-2", compact && "llm-selector-compact space-y-1", className)}>
       <div className={cn("flex min-w-0 items-center gap-2", compact ? "flex-nowrap gap-1.5" : "flex-wrap")}>
         {showBadge ? <Badge variant="secondary">模型</Badge> : null}
         <Select
@@ -274,7 +274,7 @@ export default function LLMSelector({
           onValueChange={onProviderChange}
           disabled={!hasRunnableProviders}
         >
-          <SelectTrigger className={cn(compact ? "h-9 w-[148px] lg:w-[164px]" : "w-full sm:w-[180px]")}>
+          <SelectTrigger className={cn("llm-provider-trigger", compact ? "h-9 w-[148px] lg:w-[164px]" : "w-full sm:w-[180px]")}>
             <SelectValue placeholder={hasRunnableProviders ? "选择厂商" : "请先配置可用厂商"} />
           </SelectTrigger>
           <SelectContent>
@@ -299,8 +299,8 @@ export default function LLMSelector({
             placeholder={hasRunnableProviders ? "选择模型" : "暂无可用模型"}
             searchPlaceholder="搜索模型"
             emptyText="没有可用模型"
-            className={cn(compact ? "w-[184px] lg:w-[220px]" : "w-full sm:w-[240px]")}
-            triggerClassName={compact ? "h-9 px-2.5" : undefined}
+            className={cn("llm-model-select", compact ? "w-[184px] lg:w-[220px]" : "w-full sm:w-[240px]")}
+            triggerClassName={cn("llm-model-trigger", compact ? "h-9 px-2.5" : undefined)}
             disabled={!hasRunnableProviders}
           />
         ) : null}

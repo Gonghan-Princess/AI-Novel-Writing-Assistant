@@ -9,6 +9,8 @@ const readClientFile = (relativePath) => readFileSync(join(clientRoot, relativeP
 
 const appLayout = readClientFile("src/components/layout/AppLayout.tsx");
 const css = readClientFile("src/index.css");
+const navbar = readClientFile("src/components/layout/Navbar.tsx");
+const llmSelector = readClientFile("src/components/common/LLMSelector.tsx");
 const mobileSiteNavigation = readClientFile("src/components/layout/mobile/mobileSiteNavigation.ts");
 const novelEditView = readClientFile("src/pages/novels/components/NovelEditView.tsx");
 const homePage = readClientFile("src/pages/Home.tsx");
@@ -245,6 +247,23 @@ test("mobile AppLayout uses the site shell for phone entry routes", () => {
   assert.match(appLayout, /MobileSiteShell/);
   assert.match(appLayout, /useMobileSiteLayout/);
   assert.match(appLayout, /useMobileNovelWorkspaceLayout/);
+});
+
+test("desktop topbar model selector uses compact console controls", () => {
+  assert.match(navbar, /topbar-model-selector/);
+  assert.match(navbar, /topbar-llm-selector/);
+  assert.match(llmSelector, /llm-provider-trigger/);
+  assert.match(llmSelector, /llm-model-trigger/);
+  assert.match(
+    css,
+    /topbar-llm-selector \.llm-provider-trigger[\s\S]+height: 2\.25rem;/,
+    "topbar provider select should not render as an oversized form field",
+  );
+  assert.match(
+    css,
+    /topbar-llm-selector \.llm-model-select[\s\S]+width: 12rem;/,
+    "topbar model select should stay compact on desktop",
+  );
 });
 
 test("every routed page has a route-specific mobile CSS landing point", () => {

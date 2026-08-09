@@ -18,4 +18,16 @@ test("novel creation exposes long novel template guidance", () => {
 
 test("novel basic form carries the selected long novel template id", () => {
   assert.match(novelBasicInfoShared, /longNovelTemplateId/);
+  assert.match(novelBasicInfoShared, /longNovelTemplateId:\s*"custom"/);
+});
+
+test("template guidance rules protect user text and clean custom fallback", () => {
+  assert.match(novelBasicInfoShared, /buildLongNovelTemplatePatch/);
+  assert.match(novelBasicInfoShared, /TEMPLATE_GUIDANCE_PREFIX/);
+  assert.match(novelBasicInfoShared, /startsWith\(TEMPLATE_GUIDANCE_PREFIX\)/);
+  assert.match(novelBasicInfoShared, /longNovelTemplateId === "custom"/);
+  assert.match(novelBasicInfoShared, /description:\s*clearTemplateGuidance\(previous\.description\)/);
+  assert.match(novelBasicInfoShared, /bookSellingPoint:\s*clearTemplateGuidance\(previous\.bookSellingPoint\)/);
+  assert.match(novelBasicInfoShared, /first30ChapterPromise:\s*clearTemplateGuidance\(previous\.first30ChapterPromise\)/);
+  assert.match(novelCreate, /buildLongNovelTemplatePatch/);
 });

@@ -1,5 +1,8 @@
 import type { BookAnalysisSectionKey } from "@ai-novel/shared/types/bookAnalysis";
-import type { LongNovelTemplateId } from "@ai-novel/shared/types/longNovelTemplate";
+import {
+  getLongNovelTemplate,
+  type LongNovelTemplateId,
+} from "@ai-novel/shared/types/longNovelTemplate";
 import { formatCommercialTagsInput, normalizeCommercialTags } from "@ai-novel/shared/types/novelFraming";
 
 export interface NovelBasicFormState {
@@ -46,6 +49,43 @@ export interface BasicInfoOption<T extends string> {
 }
 
 export const DEFAULT_ESTIMATED_CHAPTER_COUNT = 80;
+export const TEMPLATE_GUIDANCE_PREFIX = "模板指导：";
+
+function canApplyTemplateGuidance(value: string): boolean {
+  const trimmed = value.trim();
+  return !trimmed || trimmed.startsWith(TEMPLATE_GUIDANCE_PREFIX);
+}
+
+function clearTemplateGuidance(value: string): string {
+  return value.trim().startsWith(TEMPLATE_GUIDANCE_PREFIX) ? "" : value;
+}
+
+export function buildLongNovelTemplatePatch(
+  previous: NovelBasicFormState,
+  longNovelTemplateId: LongNovelTemplateId,
+): Partial<NovelBasicFormState> {
+  const patch: Partial<NovelBasicFormState> = { longNovelTemplateId };
+  if (longNovelTemplateId === "custom") {
+    return {
+      ...patch,
+      description: clearTemplateGuidance(previous.description),
+      bookSellingPoint: clearTemplateGuidance(previous.bookSellingPoint),
+      first30ChapterPromise: clearTemplateGuidance(previous.first30ChapterPromise),
+    };
+  }
+
+  const template = getLongNovelTemplate(longNovelTemplateId);
+  if (canApplyTemplateGuidance(previous.description)) {
+    patch.description = `${TEMPLATE_GUIDANCE_PREFIX}${template.description}`;
+  }
+  if (canApplyTemplateGuidance(previous.bookSellingPoint)) {
+    patch.bookSellingPoint = `${TEMPLATE_GUIDANCE_PREFIX}${template.planningFocus.slice(0, 3).join("；")}`;
+  }
+  if (canApplyTemplateGuidance(previous.first30ChapterPromise)) {
+    patch.first30ChapterPromise = `${TEMPLATE_GUIDANCE_PREFIX}${template.reviewFocus.slice(0, 3).join("；")}`;
+  }
+  return patch;
+}
 
 export const WRITING_MODE_OPTIONS: BasicInfoOption<NovelBasicFormState["writingMode"]>[] = [
   {

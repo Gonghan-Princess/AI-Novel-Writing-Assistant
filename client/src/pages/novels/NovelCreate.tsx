@@ -23,18 +23,11 @@ import { BookFramingQuickFillButton } from "./components/basicInfoForm/BookFrami
 import NovelCreateTitleQuickFill from "./components/titleWorkshop/NovelCreateTitleQuickFill";
 import { useNovelContinuationSources } from "./hooks/useNovelContinuationSources";
 import {
+  buildLongNovelTemplatePatch,
   buildNovelCreatePayload,
   createDefaultNovelBasicFormState,
   patchNovelBasicForm,
-  type NovelBasicFormState,
 } from "./novelBasicInfo.shared";
-
-const TEMPLATE_GUIDANCE_PREFIX = "模板指导：";
-
-function canApplyTemplateGuidance(value: string): boolean {
-  const trimmed = value.trim();
-  return !trimmed || trimmed.startsWith(TEMPLATE_GUIDANCE_PREFIX);
-}
 
 export default function NovelCreate() {
   const navigate = useNavigate();
@@ -195,20 +188,8 @@ export default function NovelCreate() {
   });
 
   const handleLongNovelTemplateChange = (longNovelTemplateId: LongNovelTemplateId) => {
-    const template = getLongNovelTemplate(longNovelTemplateId);
     setBasicForm((prev) => {
-      const patch: Partial<NovelBasicFormState> = { longNovelTemplateId };
-      if (longNovelTemplateId !== "custom") {
-        if (canApplyTemplateGuidance(prev.description)) {
-          patch.description = `${TEMPLATE_GUIDANCE_PREFIX}${template.description}`;
-        }
-        if (canApplyTemplateGuidance(prev.bookSellingPoint)) {
-          patch.bookSellingPoint = `${TEMPLATE_GUIDANCE_PREFIX}${template.planningFocus.slice(0, 3).join("；")}`;
-        }
-        if (canApplyTemplateGuidance(prev.first30ChapterPromise)) {
-          patch.first30ChapterPromise = `${TEMPLATE_GUIDANCE_PREFIX}${template.reviewFocus.slice(0, 3).join("；")}`;
-        }
-      }
+      const patch = buildLongNovelTemplatePatch(prev, longNovelTemplateId);
       return patchNovelBasicForm(prev, patch);
     });
   };

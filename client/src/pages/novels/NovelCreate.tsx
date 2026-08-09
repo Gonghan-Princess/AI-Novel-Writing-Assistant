@@ -3,6 +3,10 @@ import type { UnifiedTaskDetail } from "@ai-novel/shared/types/task";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BOOK_ANALYSIS_SECTIONS } from "@ai-novel/shared/types/bookAnalysis";
+import {
+  getLongNovelTemplate,
+  type LongNovelTemplateId,
+} from "@ai-novel/shared/types/longNovelTemplate";
 import { flattenGenreTreeOptions, getGenreTree } from "@/api/genre";
 import { bootstrapNovelWorkflow } from "@/api/novelWorkflow";
 import { createNovel } from "@/api/novel";
@@ -13,6 +17,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import NovelAutoDirectorDialog from "./components/NovelAutoDirectorDialog";
 import NovelBasicInfoForm from "./components/NovelBasicInfoForm";
 import NovelCreateResourceRecommendationCard from "./components/NovelCreateResourceRecommendationCard";
+import LongNovelMainlinePreview from "./components/LongNovelMainlinePreview";
+import LongNovelTemplatePicker from "./components/LongNovelTemplatePicker";
 import { BookFramingQuickFillButton } from "./components/basicInfoForm/BookFramingQuickFillButton";
 import NovelCreateTitleQuickFill from "./components/titleWorkshop/NovelCreateTitleQuickFill";
 import { useNovelContinuationSources } from "./hooks/useNovelContinuationSources";
@@ -20,7 +26,15 @@ import {
   buildNovelCreatePayload,
   createDefaultNovelBasicFormState,
   patchNovelBasicForm,
+  type NovelBasicFormState,
 } from "./novelBasicInfo.shared";
+
+const TEMPLATE_GUIDANCE_PREFIX = "模板指导：";
+
+function canApplyTemplateGuidance(value: string): boolean {
+  const trimmed = value.trim();
+  return !trimmed || trimmed.startsWith(TEMPLATE_GUIDANCE_PREFIX);
+}
 
 export default function NovelCreate() {
   const navigate = useNavigate();
@@ -32,6 +46,17 @@ export default function NovelCreate() {
 
   const workflowTaskIdFromQuery = searchParams.get("workflowTaskId") ?? "";
   const workflowMode = searchParams.get("mode");
+  const selectedLongNovelTemplateId = basicForm.longNovelTemplateId ?? "custom";
+  const selectedTemplate = getLongNovelTemplate(selectedLongNovelTemplateId);
+  const mainlineInspiration = [
+    basicForm.description,
+    basicForm.bookSellingPoint,
+    basicForm.first30ChapterPromise,
+    basicForm.title,
+  ].find((value) => value.trim()) ?? "";
+  const automationLabel = workflowMode === "director" || directorWorkflowTaskId
+    ? "自动导演"
+    : "AI 副驾";
 
   const worldListQuery = useQuery({
     queryKey: queryKeys.worlds.all,
@@ -169,6 +194,25 @@ export default function NovelCreate() {
     },
   });
 
+  const handleLongNovelTemplateChange = (longNovelTemplateId: LongNovelTemplateId) => {
+    const template = getLongNovelTemplate(longNovelTemplateId);
+    setBasicForm((prev) => {
+      const patch: Partial<NovelBasicFormState> = { longNovelTemplateId };
+      if (longNovelTemplateId !== "custom") {
+        if (canApplyTemplateGuidance(prev.description)) {
+          patch.description = `${TEMPLATE_GUIDANCE_PREFIX}${template.description}`;
+        }
+        if (canApplyTemplateGuidance(prev.bookSellingPoint)) {
+          patch.bookSellingPoint = `${TEMPLATE_GUIDANCE_PREFIX}${template.planningFocus.slice(0, 3).join("；")}`;
+        }
+        if (canApplyTemplateGuidance(prev.first30ChapterPromise)) {
+          patch.first30ChapterPromise = `${TEMPLATE_GUIDANCE_PREFIX}${template.reviewFocus.slice(0, 3).join("；")}`;
+        }
+      }
+      return patchNovelBasicForm(prev, patch);
+    });
+  };
+
   return (
     <div className="mx-auto max-w-5xl space-y-4">
       <Card>
@@ -178,7 +222,19 @@ export default function NovelCreate() {
             先把这本书写给谁、靠什么吸引追读、前 30 章要兑现什么定义清楚。这里的设置会直接影响后续主线规划、世界边界、写法建议和 AI 生成行为，创建后仍可继续调整。
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          <section className="space-y-3">
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">选择长篇模板</h2>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                先选一种主线骨架，我会把它变成可继续调整的简介、卖点和前期承诺。
+              </p>
+            </div>
+            <LongNovelTemplatePicker
+              value={selectedLongNovelTemplateId}
+              onChange={handleLongNovelTemplateChange}
+            />
+          </section>
           <NovelBasicInfoForm
             basicForm={basicForm}
             genreOptions={genreOptions}
@@ -208,38 +264,45 @@ export default function NovelCreate() {
               />
             )}
             projectQuickStart={(
-              <NovelAutoDirectorDialog
-                basicForm={basicForm}
-                genreOptions={genreOptions}
-                worldOptions={worldListQuery.data?.data ?? []}
-                workflowTaskId={directorWorkflowTaskId}
-                restoredTask={restoredWorkflowTask}
-                initialOpen={workflowMode === "director"}
-                onBasicFormChange={(patch) => setBasicForm((prev) => patchNovelBasicForm(prev, patch))}
-                onWorkflowTaskChange={(taskId) => {
-                  setDirectorWorkflowTaskId(taskId);
-                  setSearchParams((prev) => {
-                    const next = new URLSearchParams(prev);
-                    next.set("workflowTaskId", taskId);
-                    next.set("mode", "director");
-                    return next;
-                  }, { replace: true });
-                }}
-                onConfirmed={({ novelId, workflowTaskId, resumeTarget }) => {
-                  const search = new URLSearchParams();
-                  search.set("stage", resumeTarget?.stage ?? "story_macro");
-                  if (workflowTaskId) {
-                    search.set("directorTaskId", workflowTaskId);
-                  }
-                  if (resumeTarget?.chapterId) {
-                    search.set("chapterId", resumeTarget.chapterId);
-                  }
-                  if (resumeTarget?.volumeId) {
-                    search.set("volumeId", resumeTarget.volumeId);
-                  }
-                  navigate(`/novels/${novelId}/edit?${search.toString()}`);
-                }}
-              />
+              <div className="space-y-3">
+                <LongNovelMainlinePreview
+                  template={selectedTemplate}
+                  inspiration={mainlineInspiration}
+                  automationLabel={automationLabel}
+                />
+                <NovelAutoDirectorDialog
+                  basicForm={basicForm}
+                  genreOptions={genreOptions}
+                  worldOptions={worldListQuery.data?.data ?? []}
+                  workflowTaskId={directorWorkflowTaskId}
+                  restoredTask={restoredWorkflowTask}
+                  initialOpen={workflowMode === "director"}
+                  onBasicFormChange={(patch) => setBasicForm((prev) => patchNovelBasicForm(prev, patch))}
+                  onWorkflowTaskChange={(taskId) => {
+                    setDirectorWorkflowTaskId(taskId);
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev);
+                      next.set("workflowTaskId", taskId);
+                      next.set("mode", "director");
+                      return next;
+                    }, { replace: true });
+                  }}
+                  onConfirmed={({ novelId, workflowTaskId, resumeTarget }) => {
+                    const search = new URLSearchParams();
+                    search.set("stage", resumeTarget?.stage ?? "story_macro");
+                    if (workflowTaskId) {
+                      search.set("directorTaskId", workflowTaskId);
+                    }
+                    if (resumeTarget?.chapterId) {
+                      search.set("chapterId", resumeTarget.chapterId);
+                    }
+                    if (resumeTarget?.volumeId) {
+                      search.set("volumeId", resumeTarget.volumeId);
+                    }
+                    navigate(`/novels/${novelId}/edit?${search.toString()}`);
+                  }}
+                />
+              </div>
             )}
             titleQuickFill={(
               <NovelCreateTitleQuickFill

@@ -1,4 +1,5 @@
 import type { BookAnalysisSectionKey } from "@ai-novel/shared/types/bookAnalysis";
+import type { LongNovelTemplateId } from "@ai-novel/shared/types/longNovelTemplate";
 import { formatCommercialTagsInput, normalizeCommercialTags } from "@ai-novel/shared/types/novelFraming";
 
 export interface NovelBasicFormState {
@@ -9,6 +10,7 @@ export interface NovelBasicFormState {
   competingFeel: string;
   first30ChapterPromise: string;
   commercialTagsText: string;
+  longNovelTemplateId?: LongNovelTemplateId;
   genreId: string;
   primaryStoryModeId: string;
   secondaryStoryModeId: string;
@@ -241,6 +243,7 @@ export function createDefaultNovelBasicFormState(): NovelBasicFormState {
     competingFeel: "",
     first30ChapterPromise: "",
     commercialTagsText: "",
+    longNovelTemplateId: "custom",
     genreId: "",
     primaryStoryModeId: "",
     secondaryStoryModeId: "",

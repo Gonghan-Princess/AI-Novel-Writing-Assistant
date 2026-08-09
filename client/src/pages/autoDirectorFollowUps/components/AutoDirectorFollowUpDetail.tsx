@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { AUTO_DIRECTOR_MOBILE_CLASSES } from "@/mobile/autoDirector";
+import { getWorkflowExplanation, type WorkflowRiskLevel } from "@/lib/novelWorkflowTaskUi";
 
 interface AutoDirectorFollowUpDetailPanelProps {
   detail: AutoDirectorFollowUpDetail | null;
@@ -28,6 +29,18 @@ export function AutoDirectorFollowUpDetailPanel({
   onRefreshValidation,
   onSafeFix,
 }: AutoDirectorFollowUpDetailPanelProps) {
+  const riskLabels: Record<WorkflowRiskLevel, string> = {
+    none: "风险稳定",
+    low: "低风险",
+    medium: "需要留意",
+    high: "高优先级",
+  };
+  const riskBadgeVariants: Record<WorkflowRiskLevel, "default" | "outline" | "secondary" | "destructive"> = {
+    none: "outline",
+    low: "secondary",
+    medium: "default",
+    high: "destructive",
+  };
   const deliveryStatusLabels = {
     delivered: "已送达",
     pending: "投递中",
@@ -41,6 +54,21 @@ export function AutoDirectorFollowUpDetailPanel({
     "auto_director.completed": "已完成",
     "auto_director.progress_changed": "进度变化",
   } as const;
+  const workflowExplanation = detail && selectedItem
+    ? getWorkflowExplanation({
+      ...detail.task,
+      id: detail.directorTaskId || detail.task.id || selectedItem.directorTaskId,
+      status: selectedItem.status,
+      currentStage: detail.task.currentStage ?? selectedItem.currentStage,
+      displayStatus: detail.task.displayStatus ?? selectedItem.reasonLabel,
+      blockingReason: detail.blockingReason ?? selectedItem.blockingReason,
+      checkpointType: detail.task.checkpointType ?? selectedItem.checkpointType,
+      checkpointSummary: detail.checkpointSummary ?? detail.task.checkpointSummary,
+      nextActionLabel: detail.nextStepSuggestion ?? detail.task.nextActionLabel,
+      executionScopeLabel: detail.task.executionScopeLabel ?? selectedItem.executionScope,
+      pendingManualRecovery: detail.task.pendingManualRecovery ?? selectedItem.pendingManualRecovery,
+    })
+    : null;
 
   return (
     <Card className="min-w-0 overflow-hidden">
@@ -62,6 +90,40 @@ export function AutoDirectorFollowUpDetailPanel({
               <div className={`${AUTO_DIRECTOR_MOBILE_CLASSES.wrapText} font-medium`}>{selectedItem.novelTitle}</div>
               <div className={`${AUTO_DIRECTOR_MOBILE_CLASSES.wrapText} text-sm text-muted-foreground`}>{selectedItem.reasonLabel}</div>
             </div>
+
+            {workflowExplanation ? (
+              <div className={`space-y-3 rounded-md border bg-muted/20 p-3 text-sm ${AUTO_DIRECTOR_MOBILE_CLASSES.wrapText}`}>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="outline">{workflowExplanation.stage}</Badge>
+                  <Badge variant={riskBadgeVariants[workflowExplanation.riskLevel]}>
+                    {riskLabels[workflowExplanation.riskLevel]}
+                  </Badge>
+                  {workflowExplanation.canAutoContinue ? (
+                    <Badge variant="secondary">可继续</Badge>
+                  ) : null}
+                </div>
+                {workflowExplanation.summary ? (
+                  <div className="text-muted-foreground">{workflowExplanation.summary}</div>
+                ) : null}
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="rounded-md border bg-background/70 p-2">
+                    <div className="text-xs text-muted-foreground">暂停原因</div>
+                    <div className="mt-1 font-medium">
+                      {workflowExplanation.pauseReason ?? detail.blockingReason ?? "当前没有明确阻塞。"}
+                    </div>
+                  </div>
+                  <div className="rounded-md border bg-background/70 p-2">
+                    <div className="text-xs text-muted-foreground">建议动作</div>
+                    <div className="mt-1 font-medium">{workflowExplanation.recommendedAction}</div>
+                  </div>
+                </div>
+                {detail.riskNote ? (
+                  <div className="rounded-md border border-yellow-300 bg-yellow-50 p-2 text-xs text-yellow-950">
+                    风险提示：{detail.riskNote}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
 
             <div className={`space-y-2 text-sm text-muted-foreground ${AUTO_DIRECTOR_MOBILE_CLASSES.wrapText}`}>
               <div>阻塞原因：{detail.blockingReason ?? "暂无"}</div>

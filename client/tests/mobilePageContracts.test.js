@@ -22,6 +22,8 @@ const mobileNovelStepNav = readClientFile("src/pages/novels/mobile/MobileNovelSt
 const mobileAutoDirectorStatusCard = readClientFile("src/pages/novels/mobile/MobileAutoDirectorStatusCard.tsx");
 const mobileFloatingSaveButton = readClientFile("src/pages/novels/mobile/MobileFloatingSaveButton.tsx");
 const mobileAutoDirectorContracts = readClientFile("src/mobile/autoDirector/mobileSupportContracts.ts");
+const autoDirectorFollowUpDetail = readClientFile("src/pages/autoDirectorFollowUps/components/AutoDirectorFollowUpDetail.tsx");
+const chapterEditorShell = readClientFile("src/pages/novels/components/chapterEditor/ChapterEditorShell.tsx");
 const autoDirectorFollowUpList = readFileSync(
   join(clientRoot, "src/pages/autoDirectorFollowUps/components/AutoDirectorFollowUpList.tsx"),
   "utf8",
@@ -441,6 +443,24 @@ test("mobile follow-up overview combines summary and section filters in one comp
     css,
     /mobile-route-auto-director-follow-ups \.auto-director-follow-up-section-grid \.text-xs[\s\S]+display: none;/,
     "follow-up section descriptions should not consume mobile vertical space",
+  );
+});
+
+test("director follow-up detail explains workflow state in user-facing language", () => {
+  assert.match(autoDirectorFollowUpDetail, /getWorkflowExplanation/);
+  assert.match(autoDirectorFollowUpDetail, /workflowExplanation/);
+  assert.match(autoDirectorFollowUpDetail, /riskLevel/);
+  assert.match(autoDirectorFollowUpDetail, /recommendedAction/);
+});
+
+test("chapter editor shows the chapter production continuity card near director state", () => {
+  assert.match(chapterEditorShell, /ChapterProductionContinuityCard/);
+  assert.match(chapterEditorShell, /chapterProductionContinuity/);
+  assertAppearsBefore(
+    chapterEditorShell,
+    "<ChapterProductionContinuityCard",
+    "<ChapterEditorDirectorPanel",
+    "chapter production continuity should render before the director panel in the right rail",
   );
 });
 

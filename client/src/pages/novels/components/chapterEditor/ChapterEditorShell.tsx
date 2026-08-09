@@ -12,6 +12,7 @@ import { queryKeys } from "@/api/queryKeys";
 import { toast } from "@/components/ui/toast";
 import { useLLMStore } from "@/store/llmStore";
 import ChapterEditorDirectorPanel from "./ChapterEditorDirectorPanel";
+import ChapterProductionContinuityCard from "./ChapterProductionContinuityCard";
 import ChapterEditorSidebar from "./ChapterEditorSidebar";
 import ChapterTextEditor from "./ChapterTextEditor";
 import SelectionAIFloatingToolbar from "./SelectionAIFloatingToolbar";
@@ -130,6 +131,61 @@ export default function ChapterEditorShell(props: ChapterEditorShellProps) {
     () => toSelectionFromRange(contentDraft, workspace?.recommendedTask?.anchorRange ?? null),
     [contentDraft, workspace?.recommendedTask?.anchorRange],
   );
+  const chapterProductionContinuity = useMemo(() => {
+    const chapterMeta = workspace?.chapterMeta ?? null;
+    const hasContent = Boolean(contentDraft.trim());
+    const taskSheetReady = Boolean(
+      chapter?.taskSheet?.trim()
+        || chapter?.sceneCards?.trim()
+        || workspace?.macroContext.chapterMission?.trim()
+        || (workspace?.macroContext.mustKeepConstraints.length ?? 0) > 0,
+    );
+    const reviewReady = Boolean(
+      (workspace?.diagnosticCards.length ?? 0) > 0
+        || (workspace?.chapterMeta.openIssueCount ?? 0) > 0
+        || typeof chapter?.qualityScore === "number"
+        || typeof chapter?.continuityScore === "number"
+        || typeof chapter?.characterScore === "number"
+        || typeof chapter?.pacingScore === "number",
+    );
+    const repairReady = Boolean(
+      chapter?.repairHistory?.trim()
+        || workspace?.recommendedTask
+        || workspace?.diagnosticCards.some((card) => Boolean(card.recommendedAction)),
+    );
+    const stateSynced = Boolean(
+      workspaceStatus === "ready"
+        && chapterMeta
+        && chapterMeta.chapterId === chapter?.id
+        && !isDirty
+        && (
+          chapterMeta?.wordCount === wordCount
+            || (hasContent && reviewReady)
+        ),
+    );
+
+    return {
+      hasContent,
+      taskSheetReady,
+      reviewReady,
+      repairReady,
+      stateSynced,
+    };
+  }, [
+    chapter?.characterScore,
+    chapter?.continuityScore,
+    chapter?.id,
+    chapter?.pacingScore,
+    chapter?.qualityScore,
+    chapter?.repairHistory,
+    chapter?.sceneCards,
+    chapter?.taskSheet,
+    contentDraft,
+    isDirty,
+    wordCount,
+    workspace,
+    workspaceStatus,
+  ]);
 
   const invalidateChapterQueries = async () => {
     await Promise.all([
@@ -453,29 +509,38 @@ export default function ChapterEditorShell(props: ChapterEditorShellProps) {
         </div>
 
         <div className="min-h-0 overflow-hidden">
-          <ChapterEditorDirectorPanel
-            workspace={workspace}
-            workspaceStatus={workspaceStatus}
-            selectedDiagnosticCard={selectedDiagnosticCard}
-            session={session}
-            activeCandidate={activeCandidate}
-            revisionScope={revisionScope}
-            revisionInstruction={revisionInstruction}
-            canRunSelectionRevision={canRunSelectionRevision}
-            currentTargetDescription={currentTargetDescription}
-            isGenerating={previewMutation.isPending}
-            isApplying={acceptMutation.isPending}
-            onInstructionChange={setRevisionInstruction}
-            onScopeChange={setRevisionScope}
-            onRunRecommended={handleRunRecommended}
-            onRunSelectedDiagnostic={handleRunSelectedDiagnostic}
-            onRunFreeform={handleRunFreeform}
-            onSelectCandidate={(candidateId) => setSession((current) => ({ ...current, activeCandidateId: candidateId }))}
-            onChangeViewMode={(mode) => setSession((current) => ({ ...current, viewMode: mode }))}
-            onAccept={() => acceptMutation.mutate()}
-            onReject={handleReject}
-            onRegenerate={handleRegenerate}
-          />
+          <div className="flex min-h-0 flex-col gap-3">
+            <ChapterProductionContinuityCard
+              hasContent={chapterProductionContinuity.hasContent}
+              taskSheetReady={chapterProductionContinuity.taskSheetReady}
+              reviewReady={chapterProductionContinuity.reviewReady}
+              repairReady={chapterProductionContinuity.repairReady}
+              stateSynced={chapterProductionContinuity.stateSynced}
+            />
+            <ChapterEditorDirectorPanel
+              workspace={workspace}
+              workspaceStatus={workspaceStatus}
+              selectedDiagnosticCard={selectedDiagnosticCard}
+              session={session}
+              activeCandidate={activeCandidate}
+              revisionScope={revisionScope}
+              revisionInstruction={revisionInstruction}
+              canRunSelectionRevision={canRunSelectionRevision}
+              currentTargetDescription={currentTargetDescription}
+              isGenerating={previewMutation.isPending}
+              isApplying={acceptMutation.isPending}
+              onInstructionChange={setRevisionInstruction}
+              onScopeChange={setRevisionScope}
+              onRunRecommended={handleRunRecommended}
+              onRunSelectedDiagnostic={handleRunSelectedDiagnostic}
+              onRunFreeform={handleRunFreeform}
+              onSelectCandidate={(candidateId) => setSession((current) => ({ ...current, activeCandidateId: candidateId }))}
+              onChangeViewMode={(mode) => setSession((current) => ({ ...current, viewMode: mode }))}
+              onAccept={() => acceptMutation.mutate()}
+              onReject={handleReject}
+              onRegenerate={handleRegenerate}
+            />
+          </div>
         </div>
       </div>
     </div>

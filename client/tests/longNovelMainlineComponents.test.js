@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
+
+const clientRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const componentHooks = [
   {
@@ -24,7 +27,8 @@ const componentHooks = [
 
 test("long novel mainline components expose stable class hooks", () => {
   for (const { file, hook } of componentHooks) {
-    const source = readFileSync(join(process.cwd(), file), "utf8");
+    const relativeFile = file.replace(/^client\//, "");
+    const source = readFileSync(join(clientRoot, relativeFile), "utf8");
 
     assert.match(source, new RegExp(`\\b${hook}\\b`), `${file} should expose ${hook}`);
   }

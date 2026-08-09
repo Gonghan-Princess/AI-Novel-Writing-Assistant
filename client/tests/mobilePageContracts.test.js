@@ -257,6 +257,9 @@ test("every routed page has a route-specific mobile CSS landing point", () => {
 
 test("mobile home status metrics stay readable in a two-column grid", () => {
   assert.match(homePage, /home-status-summary-grid/);
+  assert.match(homePage, /long-novel-home-mainline/);
+  assert.match(homePage, /开始一部长篇小说/);
+  assert.match(homePage, /继续最近的作品/);
   assert.match(
     css,
     /mobile-route-home \.home-status-summary-grid[\s\S]+grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/,

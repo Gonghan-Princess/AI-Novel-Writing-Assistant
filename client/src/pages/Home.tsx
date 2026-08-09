@@ -363,20 +363,58 @@ export default function Home() {
                 把自动导演、章节执行、待确认节点和后台任务收束到一个起飞面板。打开首页就知道：哪本书最该继续，哪些队列正在推进，下一步按钮在哪里。
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button asChild size="lg" className="gap-2">
+            <div className="long-novel-home-mainline grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
+              <Button asChild size="lg" className="h-auto justify-start gap-3 px-4 py-4 text-left">
                 <Link to={DIRECTOR_CREATE_LINK}>
-                  <Sparkles className="h-4 w-4" aria-hidden="true" />
-                  一句灵感开书
+                  <Sparkles className="h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold leading-5">开始一部长篇小说</span>
+                    <span className="block text-xs font-normal leading-5 opacity-80">从一句想法进入自动导演</span>
+                  </span>
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="gap-2 bg-background/70">
+              {primaryNovel ? (
+                <Button asChild size="lg" variant="secondary" className="h-auto justify-start gap-3 px-4 py-4 text-left">
+                  <Link to={`/novels/${primaryNovel.id}/edit`}>
+                    <BookOpen className="h-5 w-5 shrink-0" aria-hidden="true" />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-semibold leading-5">继续最近的作品</span>
+                      <span className="block truncate text-xs font-normal leading-5 text-muted-foreground">
+                        {primaryNovel.title}
+                      </span>
+                    </span>
+                  </Link>
+                </Button>
+              ) : null}
+              <Button asChild size="lg" variant="outline" className="h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
+                <Link to="/auto-director/follow-ups">
+                  <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold leading-5">处理待确认节点</span>
+                    <span className="block text-xs font-normal leading-5 text-muted-foreground">
+                      {actionRequiredCount > 0 ? `${actionRequiredCount} 项需要查看` : "查看导演追问与选择"}
+                    </span>
+                  </span>
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
+                <Link to="/tasks">
+                  <Activity className="h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold leading-5">打开任务中心</span>
+                    <span className="block text-xs font-normal leading-5 text-muted-foreground">查看后台队列和故障</span>
+                  </span>
+                </Link>
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild size="sm" variant="ghost" className="gap-2">
                 <Link to={MANUAL_CREATE_LINK}>
                   <PenLine className="h-4 w-4" aria-hidden="true" />
                   手动创建
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="gap-2 bg-background/70">
+              <Button asChild size="sm" variant="ghost" className="gap-2">
                 <Link to="/help">
                   <HelpCircle className="h-4 w-4" aria-hidden="true" />
                   查看指南

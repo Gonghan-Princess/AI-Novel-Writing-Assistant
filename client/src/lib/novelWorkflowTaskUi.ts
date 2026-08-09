@@ -3,6 +3,17 @@ import type { NovelWorkflowCheckpoint } from "@ai-novel/shared/types/novelWorkfl
 import type { TaskStatus } from "@ai-novel/shared/types/task";
 
 export type WorkflowBadgeVariant = "default" | "outline" | "secondary" | "destructive";
+export type WorkflowRiskLevel = "none" | "low" | "medium" | "high";
+
+export type WorkflowExplanation = {
+  stage: string;
+  summary: string | null;
+  pauseReason: string | null;
+  recommendedAction: string;
+  route: string | null;
+  riskLevel: WorkflowRiskLevel;
+  canAutoContinue: boolean;
+};
 
 type WorkflowTaskLike = {
   id: string;
@@ -148,6 +159,105 @@ export function getWorkflowDescription(task?: NovelAutoDirectorTaskSummary | nul
     return `下一步：${task.nextActionLabel.trim()}`;
   }
   return null;
+}
+
+function getTrimmedTaskText(text?: string | null): string | null {
+  return text?.trim() || null;
+}
+
+function getWorkflowRecommendedAction(task: NovelAutoDirectorTaskSummary): string {
+  if (task.checkpointType === "candidate_selection_required") {
+    return "选择一套书级方向";
+  }
+  if (task.checkpointType === "chapter_batch_ready") {
+    if (canContinueChapterBatchAutoExecution(task)) {
+      return "继续自动执行章节批量";
+    }
+    if (task.status === "queued" || task.status === "running") {
+      return "等待章节批量自动执行完成";
+    }
+    return "查看章节批量任务";
+  }
+  if (task.checkpointType === "replan_required") {
+    return "查看重规划原因并重新规划";
+  }
+  if (task.checkpointType === "workflow_completed" || task.status === "succeeded") {
+    return "查看自动导演成果";
+  }
+  if (task.status === "failed") {
+    return "查看失败原因并处理";
+  }
+  if (task.status === "cancelled") {
+    return "查看已取消任务";
+  }
+  if (canContinueDirector(task)) {
+    return getTrimmedTaskText(task.resumeAction)
+      ?? getTrimmedTaskText(task.nextActionLabel)
+      ?? "继续自动导演";
+  }
+  if (task.status === "queued") {
+    return "等待自动导演开始";
+  }
+  if (task.status === "running") {
+    return "等待当前步骤完成";
+  }
+  return getTrimmedTaskText(task.nextActionLabel)
+    ?? getTrimmedTaskText(task.resumeAction)
+    ?? "查看自动导演任务";
+}
+
+function getWorkflowRoute(task: NovelAutoDirectorTaskSummary): string {
+  if (task.checkpointType === "candidate_selection_required") {
+    return getCandidateSelectionLink(task.id);
+  }
+  return getTaskCenterLink(task.id);
+}
+
+function getWorkflowRiskLevel(task: NovelAutoDirectorTaskSummary): WorkflowRiskLevel {
+  if (task.pendingManualRecovery || task.checkpointType === "replan_required" || task.status === "failed") {
+    return "high";
+  }
+  if (task.status === "cancelled") {
+    return "medium";
+  }
+  if (task.status === "waiting_approval") {
+    return task.checkpointType === "workflow_completed" ? "none" : "medium";
+  }
+  if (task.status === "queued" || task.status === "running") {
+    return "low";
+  }
+  return "none";
+}
+
+export function getWorkflowExplanation(task?: NovelAutoDirectorTaskSummary | null): WorkflowExplanation {
+  if (!task) {
+    return {
+      stage: "暂无自动导演任务",
+      summary: null,
+      pauseReason: null,
+      recommendedAction: "创建或选择自动导演任务",
+      route: null,
+      riskLevel: "none",
+      canAutoContinue: false,
+    };
+  }
+
+  const checkpointStage = formatWorkflowCheckpoint(task.checkpointType, task.executionScopeLabel);
+  const stage = getTrimmedTaskText(task.currentStage)
+    ?? getTrimmedTaskText(task.displayStatus)
+    ?? checkpointStage;
+  const pauseReason = getTrimmedTaskText(task.blockingReason)
+    ?? (task.pendingManualRecovery ? "任务需要人工恢复后才能继续。" : null);
+
+  return {
+    stage,
+    summary: getWorkflowDescription(task),
+    pauseReason,
+    recommendedAction: getWorkflowRecommendedAction(task),
+    route: getWorkflowRoute(task),
+    riskLevel: getWorkflowRiskLevel(task),
+    canAutoContinue: canContinueDirector(task) || canContinueChapterBatchAutoExecution(task),
+  };
 }
 
 export function canContinueDirector(task?: NovelAutoDirectorTaskSummary | null): boolean {

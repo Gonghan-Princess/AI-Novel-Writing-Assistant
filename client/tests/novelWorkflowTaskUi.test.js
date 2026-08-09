@@ -4,6 +4,7 @@ import {
   canCancelDirectorTask,
   canContinueChapterBatchAutoExecution,
   canContinueDirector,
+  getWorkflowExplanation,
 } from "../src/lib/novelWorkflowTaskUi.ts";
 
 function buildTask(overrides = {}) {
@@ -54,4 +55,29 @@ test("completed tasks are not cancelable", () => {
   });
 
   assert.equal(canCancelDirectorTask(task), false);
+});
+
+test("workflow explanation asks the user to choose a book-level direction", () => {
+  const explanation = getWorkflowExplanation(buildTask({
+    checkpointType: "candidate_selection_required",
+  }));
+
+  assert.equal(explanation.recommendedAction, "选择一套书级方向");
+});
+
+test("workflow explanation links chapter batches to the task center", () => {
+  const explanation = getWorkflowExplanation(buildTask({
+    id: "task-2",
+    checkpointType: "chapter_batch_ready",
+  }));
+
+  assert.equal(explanation.route, "/tasks?kind=novel_workflow&id=task-2");
+});
+
+test("workflow explanation marks replanning as high risk", () => {
+  const explanation = getWorkflowExplanation(buildTask({
+    checkpointType: "replan_required",
+  }));
+
+  assert.equal(explanation.riskLevel, "high");
 });

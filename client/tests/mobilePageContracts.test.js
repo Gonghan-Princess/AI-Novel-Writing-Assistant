@@ -456,6 +456,7 @@ test("director follow-up detail explains workflow state in user-facing language"
 test("chapter editor shows the chapter production continuity card near director state", () => {
   assert.match(chapterEditorShell, /ChapterProductionContinuityCard/);
   assert.match(chapterEditorShell, /chapterProductionContinuity/);
+  assert.match(chapterEditorShell, /min-h-0 flex-1 overflow-hidden/);
   assertAppearsBefore(
     chapterEditorShell,
     "<ChapterProductionContinuityCard",

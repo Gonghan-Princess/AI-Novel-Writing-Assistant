@@ -509,7 +509,7 @@ export default function ChapterEditorShell(props: ChapterEditorShellProps) {
         </div>
 
         <div className="min-h-0 overflow-hidden">
-          <div className="flex min-h-0 flex-col gap-3">
+          <div className="flex h-full min-h-0 flex-col gap-3">
             <ChapterProductionContinuityCard
               hasContent={chapterProductionContinuity.hasContent}
               taskSheetReady={chapterProductionContinuity.taskSheetReady}
@@ -517,29 +517,31 @@ export default function ChapterEditorShell(props: ChapterEditorShellProps) {
               repairReady={chapterProductionContinuity.repairReady}
               stateSynced={chapterProductionContinuity.stateSynced}
             />
-            <ChapterEditorDirectorPanel
-              workspace={workspace}
-              workspaceStatus={workspaceStatus}
-              selectedDiagnosticCard={selectedDiagnosticCard}
-              session={session}
-              activeCandidate={activeCandidate}
-              revisionScope={revisionScope}
-              revisionInstruction={revisionInstruction}
-              canRunSelectionRevision={canRunSelectionRevision}
-              currentTargetDescription={currentTargetDescription}
-              isGenerating={previewMutation.isPending}
-              isApplying={acceptMutation.isPending}
-              onInstructionChange={setRevisionInstruction}
-              onScopeChange={setRevisionScope}
-              onRunRecommended={handleRunRecommended}
-              onRunSelectedDiagnostic={handleRunSelectedDiagnostic}
-              onRunFreeform={handleRunFreeform}
-              onSelectCandidate={(candidateId) => setSession((current) => ({ ...current, activeCandidateId: candidateId }))}
-              onChangeViewMode={(mode) => setSession((current) => ({ ...current, viewMode: mode }))}
-              onAccept={() => acceptMutation.mutate()}
-              onReject={handleReject}
-              onRegenerate={handleRegenerate}
-            />
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <ChapterEditorDirectorPanel
+                workspace={workspace}
+                workspaceStatus={workspaceStatus}
+                selectedDiagnosticCard={selectedDiagnosticCard}
+                session={session}
+                activeCandidate={activeCandidate}
+                revisionScope={revisionScope}
+                revisionInstruction={revisionInstruction}
+                canRunSelectionRevision={canRunSelectionRevision}
+                currentTargetDescription={currentTargetDescription}
+                isGenerating={previewMutation.isPending}
+                isApplying={acceptMutation.isPending}
+                onInstructionChange={setRevisionInstruction}
+                onScopeChange={setRevisionScope}
+                onRunRecommended={handleRunRecommended}
+                onRunSelectedDiagnostic={handleRunSelectedDiagnostic}
+                onRunFreeform={handleRunFreeform}
+                onSelectCandidate={(candidateId) => setSession((current) => ({ ...current, activeCandidateId: candidateId }))}
+                onChangeViewMode={(mode) => setSession((current) => ({ ...current, viewMode: mode }))}
+                onAccept={() => acceptMutation.mutate()}
+                onReject={handleReject}
+                onRegenerate={handleRegenerate}
+              />
+            </div>
           </div>
         </div>
       </div>

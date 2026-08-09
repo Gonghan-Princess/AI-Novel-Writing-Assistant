@@ -31,7 +31,7 @@ export default function LongNovelTemplatePicker({ value, onChange }: LongNovelTe
             type="button"
             aria-pressed={selected}
             className={cn(
-              "min-w-0 rounded-lg border bg-background p-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "long-novel-template-card min-w-0 rounded-lg border bg-background p-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               selected
                 ? "border-primary bg-primary/10 shadow-sm ring-2 ring-primary/20"
                 : "border-border hover:border-primary/40 hover:bg-muted/30",

@@ -342,7 +342,7 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      <section className="novel-console-panel overflow-hidden rounded-xl border">
+      <section className="novel-console-panel novel-quiet-enter overflow-hidden rounded-xl border">
         <div className="grid gap-6 p-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.9fr)] lg:p-6">
           <div className="space-y-5">
             <div className="flex flex-wrap items-center gap-2">
@@ -356,7 +356,7 @@ export default function Home() {
               </Badge>
             </div>
             <div className="max-w-4xl space-y-3">
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              <h1 className="home-editorial-title text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
                 宫寒创作驾驶舱
               </h1>
               <p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
@@ -364,7 +364,7 @@ export default function Home() {
               </p>
             </div>
             <div className="long-novel-home-mainline grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
-              <Button asChild size="lg" className="h-auto justify-start gap-3 px-4 py-4 text-left">
+              <Button asChild size="lg" className="home-mainline-action h-auto justify-start gap-3 px-4 py-4 text-left">
                 <Link to={DIRECTOR_CREATE_LINK}>
                   <Sparkles className="h-5 w-5 shrink-0" aria-hidden="true" />
                   <span className="min-w-0">
@@ -374,7 +374,7 @@ export default function Home() {
                 </Link>
               </Button>
               {primaryNovel ? (
-                <Button asChild size="lg" variant="secondary" className="h-auto justify-start gap-3 px-4 py-4 text-left">
+                <Button asChild size="lg" variant="secondary" className="home-mainline-action h-auto justify-start gap-3 px-4 py-4 text-left">
                   <Link to={`/novels/${primaryNovel.id}/edit`}>
                     <BookOpen className="h-5 w-5 shrink-0" aria-hidden="true" />
                     <span className="min-w-0">
@@ -386,7 +386,7 @@ export default function Home() {
                   </Link>
                 </Button>
               ) : null}
-              <Button asChild size="lg" variant="outline" className="h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
+              <Button asChild size="lg" variant="outline" className="home-mainline-action h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
                 <Link to="/auto-director/follow-ups">
                   <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden="true" />
                   <span className="min-w-0">
@@ -397,7 +397,7 @@ export default function Home() {
                   </span>
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
+              <Button asChild size="lg" variant="outline" className="home-mainline-action h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
                 <Link to="/tasks">
                   <Activity className="h-5 w-5 shrink-0" aria-hidden="true" />
                   <span className="min-w-0">
@@ -534,7 +534,7 @@ export default function Home() {
                       <BookOpen className="h-4 w-4" aria-hidden="true" />
                       当前锁定
                     </div>
-                    <div className="mt-2 text-3xl font-semibold tracking-tight">{primaryNovel.title}</div>
+                    <div className="novel-editorial-title mt-2 text-3xl font-semibold tracking-tight">{primaryNovel.title}</div>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                       {primaryNovel.latestAutoDirectorTask ? (
                         <>

@@ -39,7 +39,7 @@ export default function LongNovelMainlineStatusPanel({
   const canOpenRoute = Boolean(explanation.route);
 
   return (
-    <section className="long-novel-mainline-status rounded-lg border bg-background/80 p-3 sm:p-4">
+    <section className="long-novel-mainline-status novel-quiet-enter rounded-lg border bg-background/80 p-3 sm:p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">

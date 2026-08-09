@@ -28,6 +28,9 @@
   --console-paper: 42 34% 94%;
   --console-line: 193 33% 31%;
   --console-amber: 38 74% 52%;
+  --console-copper: 24 56% 43%;
+  --console-green: 154 34% 30%;
+  --console-shadow: 205 38% 12%;
 }
 
 * {
@@ -40,11 +43,22 @@ body {
     radial-gradient(circle at 12% 8%, hsl(38 74% 52% / 0.08), transparent 28rem),
     radial-gradient(circle at 88% 12%, hsl(188 54% 34% / 0.1), transparent 30rem),
     linear-gradient(135deg, hsl(var(--background)), hsl(41 28% 92%));
-  font-family: "IBM Plex Sans", "Segoe UI", "Microsoft YaHei UI", sans-serif;
+  font-family: "Source Han Sans SC", "Noto Sans CJK SC", "Microsoft YaHei UI", "Segoe UI", sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1, "tnum" 1;
   letter-spacing: 0;
 }
 
 @layer utilities {
+  .home-editorial-title,
+  .novel-editorial-title {
+    font-family: "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "SimSun", serif;
+    letter-spacing: 0;
+  }
+
+  .novel-quiet-enter {
+    animation: novel-quiet-enter 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
   .novel-console-shell {
     background:
       linear-gradient(hsl(var(--console-line) / 0.045) 1px, transparent 1px),
@@ -55,11 +69,25 @@ body {
   }
 
   .novel-console-panel {
+    position: relative;
+    isolation: isolate;
     border-color: hsl(var(--border) / 0.78);
     background:
       linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(var(--console-paper) / 0.88)),
       repeating-linear-gradient(135deg, hsl(var(--foreground) / 0.028) 0 1px, transparent 1px 7px);
-    box-shadow: 0 18px 44px hsl(var(--console-ink) / 0.08);
+    box-shadow: 0 18px 44px hsl(var(--console-shadow) / 0.08), inset 0 1px 0 hsl(var(--primary-foreground) / 0.55);
+  }
+
+  .novel-console-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, hsl(var(--console-copper) / 0.16), transparent 18rem),
+      radial-gradient(circle at 92% 12%, hsl(var(--console-green) / 0.12), transparent 13rem);
+    opacity: 0.85;
   }
 
   .novel-console-topbar {
@@ -101,6 +129,29 @@ body {
       repeating-linear-gradient(0deg, hsl(var(--primary) / 0.035) 0 1px, transparent 1px 12px);
   }
 
+  .home-mainline-action {
+    position: relative;
+    overflow: hidden;
+    border-color: hsl(var(--primary) / 0.18);
+  }
+
+  .home-mainline-action::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(120deg, transparent 0 28%, hsl(var(--primary-foreground) / 0.16) 42%, transparent 56%);
+    opacity: 0;
+    transform: translateX(-28%);
+    transition: opacity 180ms ease, transform 520ms ease;
+  }
+
+  .home-mainline-action:hover::after,
+  .home-mainline-action:focus-visible::after {
+    opacity: 1;
+    transform: translateX(28%);
+  }
+
   .home-flight-map::before {
     content: "";
     position: absolute;
@@ -123,6 +174,14 @@ body {
     background: hsl(var(--background) / 0.76);
     padding: 0.75rem;
     box-shadow: 0 10px 24px hsl(var(--console-ink) / 0.05);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  }
+
+  .home-flight-step:hover {
+    transform: translateX(3px);
+    border-color: hsl(var(--primary) / 0.22);
+    background-color: hsl(var(--background) / 0.9);
+    box-shadow: 0 16px 32px hsl(var(--console-shadow) / 0.08);
   }
 
   .home-flight-marker {
@@ -140,13 +199,13 @@ body {
   }
 
   .home-metric-card {
-    transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
   }
 
   .home-metric-card:hover {
     transform: translateY(-2px);
     border-color: hsl(var(--primary) / 0.24);
-    box-shadow: 0 18px 38px hsl(var(--console-ink) / 0.09);
+    box-shadow: 0 18px 38px hsl(var(--console-shadow) / 0.09);
   }
 
   .home-queue-row {
@@ -157,6 +216,65 @@ body {
   .home-queue-row:hover {
     background:
       linear-gradient(90deg, hsl(var(--accent) / 0.26), hsl(var(--muted) / 0.36));
+  }
+
+  .long-novel-mainline-status {
+    position: relative;
+    isolation: isolate;
+    border-color: hsl(var(--primary) / 0.16);
+    background:
+      linear-gradient(180deg, hsl(var(--background) / 0.92), hsl(var(--console-paper) / 0.78)),
+      repeating-linear-gradient(90deg, hsl(var(--primary) / 0.035) 0 1px, transparent 1px 12px);
+    box-shadow: 0 12px 30px hsl(var(--console-shadow) / 0.06);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .long-novel-mainline-status::before {
+    content: "";
+    position: absolute;
+    inset: 0.55rem;
+    z-index: -1;
+    border-radius: 0.6rem;
+    background:
+      radial-gradient(circle at 85% 20%, hsl(var(--console-amber) / 0.18), transparent 5rem),
+      radial-gradient(circle at 10% 90%, hsl(var(--console-green) / 0.12), transparent 6rem);
+    opacity: 0.9;
+  }
+
+  .long-novel-mainline-status:hover {
+    transform: translateY(-1px);
+    border-color: hsl(var(--primary) / 0.28);
+    box-shadow: 0 18px 36px hsl(var(--console-shadow) / 0.09);
+  }
+
+  .long-novel-template-card {
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px hsl(var(--console-shadow) / 0.045);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  }
+
+  .long-novel-template-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(135deg, hsl(var(--console-copper) / 0.12), transparent 42%),
+      radial-gradient(circle at 88% 12%, hsl(var(--console-amber) / 0.16), transparent 5rem);
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+
+  .long-novel-template-card:hover,
+  .long-novel-template-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px hsl(var(--console-shadow) / 0.09);
+  }
+
+  .long-novel-template-card:hover::before,
+  .long-novel-template-card:focus-visible::before {
+    opacity: 1;
   }
 
   .mobile-novel-workspace-panel {
@@ -913,5 +1031,28 @@ body {
 
   .mobile-chapter-editor-shell > div > .flex > .grid > :nth-child(3) {
     order: 3;
+  }
+}
+
+@keyframes novel-quiet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
   }
 }

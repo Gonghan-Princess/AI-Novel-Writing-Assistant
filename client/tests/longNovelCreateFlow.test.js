@@ -3,6 +3,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  buildLongNovelTemplatePatch,
+  createDefaultNovelBasicFormState,
+  patchNovelBasicForm,
+  TEMPLATE_GUIDANCE_PREFIX,
+} from "../src/pages/novels/novelBasicInfo.shared.ts";
 
 const clientRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const readClientFile = (relativePath) => readFileSync(join(clientRoot, relativePath), "utf8");
@@ -21,13 +27,51 @@ test("novel basic form carries the selected long novel template id", () => {
   assert.match(novelBasicInfoShared, /longNovelTemplateId:\s*"custom"/);
 });
 
-test("template guidance rules protect user text and clean custom fallback", () => {
+test("template guidance source exposes the reusable form rule", () => {
   assert.match(novelBasicInfoShared, /buildLongNovelTemplatePatch/);
   assert.match(novelBasicInfoShared, /TEMPLATE_GUIDANCE_PREFIX/);
-  assert.match(novelBasicInfoShared, /startsWith\(TEMPLATE_GUIDANCE_PREFIX\)/);
-  assert.match(novelBasicInfoShared, /longNovelTemplateId === "custom"/);
-  assert.match(novelBasicInfoShared, /description:\s*clearTemplateGuidance\(previous\.description\)/);
-  assert.match(novelBasicInfoShared, /bookSellingPoint:\s*clearTemplateGuidance\(previous\.bookSellingPoint\)/);
-  assert.match(novelBasicInfoShared, /first30ChapterPromise:\s*clearTemplateGuidance\(previous\.first30ChapterPromise\)/);
   assert.match(novelCreate, /buildLongNovelTemplatePatch/);
+});
+
+test("template guidance fills empty fields for a selected template", () => {
+  const base = createDefaultNovelBasicFormState();
+  const patch = buildLongNovelTemplatePatch(base, "fantasy");
+
+  assert.equal(patch.longNovelTemplateId, "fantasy");
+  assert.match(patch.description, new RegExp(`^${TEMPLATE_GUIDANCE_PREFIX}`));
+  assert.match(patch.bookSellingPoint, new RegExp(`^${TEMPLATE_GUIDANCE_PREFIX}`));
+  assert.match(patch.first30ChapterPromise, new RegExp(`^${TEMPLATE_GUIDANCE_PREFIX}`));
+});
+
+test("template guidance does not overwrite user-authored text", () => {
+  const base = {
+    ...createDefaultNovelBasicFormState(),
+    description: "我要自己定义这本书的简介",
+    bookSellingPoint: "主卖点由我手写",
+    first30ChapterPromise: "前三十章承诺也由我决定",
+  };
+  const patch = buildLongNovelTemplatePatch(base, "mystery");
+
+  assert.equal(patch.longNovelTemplateId, "mystery");
+  assert.equal(patch.description, undefined);
+  assert.equal(patch.bookSellingPoint, undefined);
+  assert.equal(patch.first30ChapterPromise, undefined);
+});
+
+test("template guidance replaces previous template text and cleans custom fallback", () => {
+  const base = createDefaultNovelBasicFormState();
+  const fantasyState = patchNovelBasicForm(base, buildLongNovelTemplatePatch(base, "fantasy"));
+  const mysteryPatch = buildLongNovelTemplatePatch(fantasyState, "mystery");
+  const mysteryState = patchNovelBasicForm(fantasyState, mysteryPatch);
+  const customPatch = buildLongNovelTemplatePatch(mysteryState, "custom");
+
+  assert.equal(mysteryPatch.longNovelTemplateId, "mystery");
+  assert.match(mysteryPatch.description, /^模板指导：/);
+  assert.notEqual(mysteryPatch.description, fantasyState.description);
+  assert.deepEqual(customPatch, {
+    longNovelTemplateId: "custom",
+    description: "",
+    bookSellingPoint: "",
+    first30ChapterPromise: "",
+  });
 });

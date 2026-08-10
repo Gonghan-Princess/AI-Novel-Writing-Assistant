@@ -109,7 +109,7 @@ export default function SearchableSelect({
         aria-haspopup="listbox"
         title={displayLabel || undefined}
         className={cn(
-          "group flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border/70 bg-background px-3 py-2 text-sm shadow-sm ring-offset-background transition-all duration-150 placeholder:text-muted-foreground hover:border-primary/35 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-ring/60 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          "group flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-border/70 bg-background/76 px-3 py-2 text-sm shadow-inner shadow-foreground/[0.025] ring-offset-background transition-[border-color,box-shadow,background-color] duration-150 placeholder:text-muted-foreground hover:border-primary/35 hover:bg-background/90 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50",
           triggerClassName,
         )}
         onClick={() => setOpen((prev) => !prev)}
@@ -127,7 +127,7 @@ export default function SearchableSelect({
       {open ? (
         <div
           className={cn(
-            "absolute left-0 z-50 mt-2 min-w-full max-w-[min(36rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-border/80 bg-popover/95 text-popover-foreground shadow-xl backdrop-blur-sm",
+            "absolute left-0 z-50 mt-2 min-w-full max-w-[min(36rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-border/80 bg-popover/96 text-popover-foreground shadow-xl shadow-foreground/10 backdrop-blur-md",
             contentClassName,
           )}
         >
@@ -138,7 +138,7 @@ export default function SearchableSelect({
                 ref={inputRef}
                 value={query}
                 placeholder={searchPlaceholder}
-                className="h-9 rounded-lg border-border/70 bg-background/80 pl-8"
+                className="h-8 rounded-lg border-border/70 bg-background/82 pl-8"
                 onChange={(event) => setQuery(event.target.value)}
                 onKeyDown={(event) => {
                   event.stopPropagation();

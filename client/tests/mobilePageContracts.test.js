@@ -256,12 +256,12 @@ test("desktop topbar model selector uses compact console controls", () => {
   assert.match(llmSelector, /llm-model-trigger/);
   assert.match(
     css,
-    /topbar-llm-selector \.llm-provider-trigger[\s\S]+height: 2\.25rem;/,
+    /topbar-llm-selector \.llm-provider-trigger[\s\S]+height: 2rem;/,
     "topbar provider select should not render as an oversized form field",
   );
   assert.match(
     css,
-    /topbar-llm-selector \.llm-model-select[\s\S]+width: 12rem;/,
+    /topbar-llm-selector \.llm-model-select[\s\S]+width: 10\.5rem;/,
     "topbar model select should stay compact on desktop",
   );
 });

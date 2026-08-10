@@ -22,15 +22,15 @@ export default function Navbar(props: NavbarProps) {
   const useMobileAutoDirectorShell = shouldUseAutoDirectorMobileFullWidthContent(location.pathname);
 
   return (
-    <header className="novel-console-topbar flex h-16 min-w-0 items-center justify-between gap-3 border-b border-border/80 px-4 sm:px-6">
-      <div className="flex min-w-0 items-center gap-3">
-        <DesktopBrandMark className="h-9 w-9 shrink-0 drop-shadow-none" />
+    <header className="novel-console-topbar flex h-14 min-w-0 items-center justify-between gap-3 border-b border-border/80 px-4 sm:px-5">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <DesktopBrandMark className="h-8 w-8 shrink-0 drop-shadow-none" />
         <div className="flex min-w-0 flex-col leading-tight">
           <div className="flex min-w-0 items-center gap-1.5">
             <span className="min-w-0 truncate text-sm font-semibold text-foreground">宫寒小说导演控制台</span>
             <AppVersionBadge />
           </div>
-          <span className="hidden truncate text-[11px] font-medium text-muted-foreground sm:block">
+          <span className="hidden truncate text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground sm:block">
             Long-form Novel Production Console
           </span>
         </div>

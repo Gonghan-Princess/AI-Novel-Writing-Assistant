@@ -341,10 +341,10 @@ export default function Home() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <section className="novel-console-panel novel-quiet-enter overflow-hidden rounded-xl border">
-        <div className="grid gap-6 p-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.9fr)] lg:p-6">
-          <div className="space-y-5">
+        <div className="grid gap-5 p-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.82fr)] lg:p-5">
+          <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <Badge className="gap-1.5">
                 <RadioTower className="h-3.5 w-3.5" aria-hidden="true" />
@@ -355,8 +355,8 @@ export default function Home() {
                 最近 {HOME_NOVEL_FETCH_LIMIT} 个项目
               </Badge>
             </div>
-            <div className="max-w-4xl space-y-3">
-              <h1 className="home-editorial-title text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+            <div className="max-w-4xl space-y-2">
+              <h1 className="home-editorial-title text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
                 宫寒创作驾驶舱
               </h1>
               <p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
@@ -364,7 +364,7 @@ export default function Home() {
               </p>
             </div>
             <div className="long-novel-home-mainline grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]">
-              <Button asChild size="lg" className="home-mainline-action h-auto justify-start gap-3 px-4 py-4 text-left">
+              <Button asChild size="lg" className="home-mainline-action h-auto justify-start gap-3 px-4 py-3 text-left">
                 <Link to={DIRECTOR_CREATE_LINK}>
                   <Sparkles className="h-5 w-5 shrink-0" aria-hidden="true" />
                   <span className="min-w-0">
@@ -374,7 +374,7 @@ export default function Home() {
                 </Link>
               </Button>
               {primaryNovel ? (
-                <Button asChild size="lg" variant="secondary" className="home-mainline-action h-auto justify-start gap-3 px-4 py-4 text-left">
+                <Button asChild size="lg" variant="secondary" className="home-mainline-action h-auto justify-start gap-3 px-4 py-3 text-left">
                   <Link to={`/novels/${primaryNovel.id}/edit`}>
                     <BookOpen className="h-5 w-5 shrink-0" aria-hidden="true" />
                     <span className="min-w-0">
@@ -386,7 +386,7 @@ export default function Home() {
                   </Link>
                 </Button>
               ) : null}
-              <Button asChild size="lg" variant="outline" className="home-mainline-action h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
+              <Button asChild size="lg" variant="outline" className="home-mainline-action h-auto justify-start gap-3 bg-background/70 px-4 py-3 text-left">
                 <Link to="/auto-director/follow-ups">
                   <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden="true" />
                   <span className="min-w-0">
@@ -397,7 +397,7 @@ export default function Home() {
                   </span>
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="home-mainline-action h-auto justify-start gap-3 bg-background/70 px-4 py-4 text-left">
+              <Button asChild size="lg" variant="outline" className="home-mainline-action h-auto justify-start gap-3 bg-background/70 px-4 py-3 text-left">
                 <Link to="/tasks">
                   <Activity className="h-5 w-5 shrink-0" aria-hidden="true" />
                   <span className="min-w-0">
@@ -423,8 +423,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="home-flight-map rounded-xl border bg-background/85 p-4 shadow-sm">
-            <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="home-flight-map rounded-xl border bg-background/85 p-3 shadow-sm">
+            <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2 text-sm font-medium">
                   <Compass className="h-4 w-4 text-primary" aria-hidden="true" />
@@ -436,7 +436,7 @@ export default function Home() {
               </div>
               <Rocket className="h-5 w-5 text-primary" aria-hidden="true" />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {[
                 ["01", "灵感", "一句模糊想法"],
                 ["02", "定盘", "方向、标题和卖点"],
@@ -450,7 +450,7 @@ export default function Home() {
                   </div>
                 </div>
               ))}
-              <div className="mt-4 rounded-lg border border-dashed bg-muted/30 p-3 text-xs leading-5 text-muted-foreground">
+              <div className="mt-3 rounded-lg border border-dashed bg-muted/30 p-2.5 text-xs leading-5 text-muted-foreground">
                 关键阶段会停下来等你确认，适合先搭骨架再精修；也可以手动创建，直接进入传统编辑流程。
               </div>
             </div>
@@ -458,7 +458,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="home-status-summary-grid grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="home-status-summary-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           title="推进雷达"
           value={liveWorkflowCount}

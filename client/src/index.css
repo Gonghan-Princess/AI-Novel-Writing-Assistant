@@ -92,9 +92,9 @@ body {
 
   .novel-console-topbar {
     background:
-      linear-gradient(90deg, hsl(var(--card) / 0.96), hsl(41 35% 94% / 0.94)),
-      repeating-linear-gradient(90deg, hsl(var(--foreground) / 0.035) 0 1px, transparent 1px 9px);
-    box-shadow: 0 1px 0 hsl(var(--primary) / 0.08), 0 12px 34px hsl(var(--console-ink) / 0.07);
+      linear-gradient(90deg, hsl(var(--card) / 0.98), hsl(41 35% 94% / 0.96)),
+      repeating-linear-gradient(90deg, hsl(var(--foreground) / 0.028) 0 1px, transparent 1px 10px);
+    box-shadow: 0 1px 0 hsl(var(--primary) / 0.08), 0 8px 24px hsl(var(--console-ink) / 0.055);
   }
 
   .topbar-model-selector {
@@ -106,8 +106,8 @@ body {
     background:
       linear-gradient(180deg, hsl(var(--background) / 0.78), hsl(var(--console-paper) / 0.62)),
       repeating-linear-gradient(90deg, hsl(var(--primary) / 0.04) 0 1px, transparent 1px 10px);
-    padding: 0.25rem;
-    box-shadow: inset 0 1px 0 hsl(var(--primary-foreground) / 0.55), 0 8px 22px hsl(var(--console-shadow) / 0.055);
+    padding: 0.1875rem;
+    box-shadow: inset 0 1px 0 hsl(var(--primary-foreground) / 0.5), 0 6px 16px hsl(var(--console-shadow) / 0.045);
   }
 
   .topbar-llm-selector .llm-selector-compact > .flex {
@@ -116,24 +116,24 @@ body {
 
   .topbar-llm-selector .llm-provider-trigger,
   .topbar-llm-selector .llm-model-trigger {
-    height: 2.25rem;
+    height: 2rem;
     border-radius: 999px;
     border-color: transparent;
     background: transparent;
     padding-left: 0.85rem;
     padding-right: 0.7rem;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 650;
     color: hsl(var(--foreground));
     box-shadow: none;
   }
 
   .topbar-llm-selector .llm-provider-trigger {
-    width: 8.25rem;
+    width: 7.5rem;
   }
 
   .topbar-llm-selector .llm-model-select {
-    width: 12rem;
+    width: 10.5rem;
   }
 
   .topbar-llm-selector .llm-provider-trigger:hover,
@@ -142,7 +142,7 @@ body {
   .topbar-llm-selector .llm-model-trigger[aria-expanded="true"] {
     border-color: hsl(var(--primary) / 0.18);
     background: hsl(var(--background) / 0.92);
-    box-shadow: 0 5px 14px hsl(var(--console-shadow) / 0.07);
+    box-shadow: 0 4px 12px hsl(var(--console-shadow) / 0.06);
   }
 
   .topbar-llm-selector .llm-provider-trigger:focus,
@@ -225,7 +225,7 @@ body {
     border: 1px solid hsl(var(--border) / 0.72);
     border-radius: 0.75rem;
     background: hsl(var(--background) / 0.76);
-    padding: 0.75rem;
+    padding: 0.625rem;
     box-shadow: 0 10px 24px hsl(var(--console-ink) / 0.05);
     transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
   }
@@ -239,8 +239,8 @@ body {
 
   .home-flight-marker {
     display: grid;
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 2.15rem;
+    height: 2.15rem;
     place-items: center;
     border-radius: 0.625rem;
     background: hsl(var(--primary));
@@ -253,6 +253,10 @@ body {
 
   .home-metric-card {
     transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  }
+
+  .home-metric-card > div {
+    padding: 1rem;
   }
 
   .home-metric-card:hover {
@@ -872,6 +876,20 @@ body {
   .mobile-route-drama > .grid,
   .mobile-route-creative-hub > .grid {
     height: auto;
+  }
+
+  @media (max-width: 1023px) {
+    .topbar-model-selector {
+      max-width: 48vw;
+    }
+
+    .topbar-llm-selector .llm-provider-trigger {
+      width: 6.75rem;
+    }
+
+    .topbar-llm-selector .llm-model-select {
+      width: 9rem;
+    }
   }
 
   .mobile-route-chat-legacy > .rounded-xl:first-child,

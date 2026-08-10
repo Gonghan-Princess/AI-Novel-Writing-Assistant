@@ -19,7 +19,7 @@ import {
 const SIDEBAR_COLLAPSED_STORAGE_KEY = "ai-novel.sidebar.collapsed";
 const WORKSPACE_RAIL_COLLAPSED_STORAGE_KEY = "ai-novel.workspace-rail.collapsed";
 const DEFAULT_APP_MAIN_CLASS_NAME =
-  "novel-console-scroll h-[calc(100vh-4rem)] min-w-0 flex-1 overflow-y-auto p-6";
+  "novel-console-scroll h-[calc(100vh-3.5rem)] min-w-0 flex-1 overflow-y-auto p-5";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -114,7 +114,7 @@ export default function AppLayout() {
           workspaceNavMode={isNovelWorkspace ? workspaceNavMode : undefined}
           onWorkspaceNavModeChange={isNovelWorkspace ? setWorkspaceNavMode : undefined}
         />
-        <div className="flex min-h-[calc(100vh-4rem)]">
+        <div className="flex min-h-[calc(100vh-3.5rem)]">
           <div className={useMobileFullWidthContent ? "hidden md:block" : "shrink-0"}>
             {isNovelWorkspace && workspaceNavMode === "workspace" && workspaceRoute ? (
               <NovelWorkspaceRail
